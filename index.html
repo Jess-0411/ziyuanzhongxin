@@ -1,0 +1,5505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>资料收集 - 资源中心原型</title>
+  <style>
+    :root {
+      --brand: #18b987;
+      --brand-dark: #0da475;
+      --orange: #f5a623;
+      --blue: #3aa7e8;
+      --red: #ee6363;
+      --text: #202833;
+      --muted: #77808a;
+      --line: #edf0f3;
+      --page: #f5f7f9;
+      --soft: #e9fbf5;
+      --panel: #fff;
+      --shadow: 0 12px 32px rgba(28, 42, 56, .09);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 1180px;
+      background: #eef2f5;
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .prototype {
+      display: grid;
+      grid-template-columns: minmax(780px, 1fr) 430px;
+      gap: 18px;
+      padding: 18px;
+      align-items: start;
+    }
+
+    .pc {
+      min-height: calc(100vh - 36px);
+      display: grid;
+      grid-template-columns: 176px 1fr;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .logo {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: #ffb73f;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .nav-item {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 14px;
+      color: #2b333d;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item.active {
+      border-left-color: var(--brand);
+      background: #e8f8f3;
+      color: var(--brand-dark);
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+
+    .main {
+      min-width: 0;
+      background: var(--page);
+    }
+
+    .topbar {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(24, 38, 52, .08);
+    }
+
+    .topbar-left,
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .prd-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 5px rgba(36, 190, 143, .12);
+    }
+
+    .app-prd-dot {
+      justify-self: end;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 5px rgba(36, 190, 143, .12);
+    }
+
+    .hamburger {
+      font-size: 22px;
+      color: #4d5660;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #39424d;
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #18202b, #13b886);
+    }
+
+    .tabs {
+      height: 35px;
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      padding-left: 12px;
+    }
+
+    .tab-chip {
+      height: 25px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 9px;
+      border: 1px solid #dfe6eb;
+      border-radius: 4px 4px 0 0;
+      background: #fff;
+      font-size: 12px;
+    }
+
+    .tab-chip.active {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .content {
+      margin: 0 12px 12px;
+      min-height: calc(100vh - 133px);
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .page-head {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .page-head.hide {
+      display: none;
+    }
+
+    .head-actions .btn.hide {
+      display: none;
+    }
+
+    .head-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 13px;
+      border: 1px solid #dfe4e8;
+      border-radius: 4px;
+      background: #fff;
+      color: #2f3944;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .btn.ghost {
+      color: var(--brand-dark);
+      border-color: #bfeadd;
+      background: #f2fffb;
+    }
+
+    .btn.danger {
+      color: #bd3333;
+      border-color: #ffd4d4;
+      background: #fff6f6;
+    }
+
+    .resource-layout {
+      display: block;
+      min-height: calc(100vh - 175px);
+    }
+
+    .work-pane {
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.2fr) minmax(170px, 1fr) minmax(280px, 1fr) 76px 76px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .filters .btn {
+      width: 76px;
+      padding: 0;
+    }
+
+    .field {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #4a535e;
+      white-space: nowrap;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 32px;
+      border: 1px solid #dfe5eb;
+      border-radius: 4px;
+      padding: 0 10px;
+      color: #2f3843;
+      background: #fff;
+    }
+
+    .date-range {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-range span {
+      color: #8a939d;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      height: 78px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat strong {
+      font-size: 24px;
+    }
+
+    .stat.good strong { color: var(--brand-dark); }
+    .stat.warn strong { color: var(--orange); }
+    .stat.blue strong { color: var(--blue); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--line);
+    }
+
+    th {
+      height: 40px;
+      padding: 0 10px;
+      background: #f7f8fa;
+      color: #1f2730;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid var(--line);
+    }
+
+    td {
+      height: 58px;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--line);
+      color: #3a434e;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .name-cell {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      font-weight: 700;
+    }
+
+    .type-badge,
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #eff9ff;
+      color: #2078aa;
+    }
+
+    .type-badge.collect {
+      background: #fff6e5;
+      color: #a56a00;
+    }
+
+    .status-badge.open {
+      background: #e9fbf5;
+      color: var(--brand-dark);
+    }
+
+    .status-badge.done {
+      background: #eef2f6;
+      color: #69727c;
+    }
+
+    .status-badge.late {
+      background: #fff0f0;
+      color: #c34646;
+    }
+
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar {
+      flex: 1;
+      height: 7px;
+      border-radius: 999px;
+      background: #edf1f4;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--brand);
+    }
+
+    .ops {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .link {
+      color: var(--brand-dark);
+      padding: 0;
+    }
+
+    .link.muted { color: #69727c; }
+    .link.danger { color: #d55151; }
+
+    .detail {
+      display: none;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .detail.show { display: block; }
+
+    .pc-detail-page {
+      display: none;
+    }
+
+    .pc-detail-page.show {
+      display: block;
+    }
+
+    .pc-list-page.hide {
+      display: none;
+    }
+
+    .pc-collect-tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      background: #f3f6f8;
+    }
+
+    .pc-collect-tabs button {
+      min-width: 90px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 4px;
+      color: #66717c;
+    }
+
+    .pc-collect-tabs button.active {
+      background: #fff;
+      color: var(--brand-dark);
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(25, 42, 56, .1);
+    }
+
+    .pc-collect-actions {
+      margin: -2px 0 12px;
+    }
+
+    .seg.teacher-resource-tabs {
+      display: flex;
+      grid-template-columns: none;
+      gap: 20px;
+      margin: 0 0 8px;
+      padding: 0 2px 7px;
+      border-bottom: 1px solid #e5eaee;
+    }
+
+    .seg.teacher-resource-tabs button {
+      flex: 0 0 auto;
+      height: 28px;
+      padding: 0;
+      border-radius: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #64717d;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .seg.teacher-resource-tabs button.active {
+      border-bottom-color: var(--brand);
+      background: transparent;
+      color: var(--brand-dark);
+    }
+
+    .seg.teacher-collect-tabs {
+      display: inline-flex;
+      grid-template-columns: none;
+      width: auto;
+      gap: 2px;
+      margin: 0 0 10px;
+      padding: 3px;
+      border-radius: 4px;
+      background: #edf3f1;
+    }
+
+    .seg.teacher-collect-tabs button {
+      min-width: 72px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 3px;
+      background: transparent;
+      color: #64717d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .seg.teacher-collect-tabs button.active {
+      background: #fff;
+      color: var(--brand-dark);
+      box-shadow: 0 1px 3px rgba(25, 42, 56, .12);
+    }
+
+    .seg.teacher-collect-status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: -2px 0 10px;
+      color: #687480;
+      font-size: 13px;
+    }
+
+    .teacher-collect-status select {
+      width: 112px;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #dfe5eb;
+      border-radius: 4px;
+      background: #fff;
+      color: #334150;
+      font-size: 13px;
+    }
+
+    .detail-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fbfcfd;
+      margin-bottom: 12px;
+    }
+
+    .info-grid div {
+      min-width: 0;
+      color: #3a434e;
+      line-height: 1.6;
+    }
+
+    .info-grid b {
+      display: block;
+      color: #8a939d;
+      font-weight: 600;
+    }
+
+    .info-stat-link {
+      display: grid;
+      gap: 2px;
+      justify-items: start;
+      padding: 0;
+      color: var(--brand-dark);
+      text-align: left;
+    }
+
+    .info-stat-link b {
+      color: #8a939d;
+    }
+
+    .info-stat-link span {
+      color: var(--brand-dark);
+      font-weight: 700;
+    }
+
+    .info-stat-link.unsubmitted-stat span {
+      color: #d55151;
+    }
+
+    .participant-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .participant-modal {
+      width: 520px;
+    }
+
+    .participant-list-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .participant-list-scroll {
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      overscroll-behavior: contain;
+    }
+
+    .participant-table th,
+    .participant-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .participant-table th {
+      background: #f7f9fb;
+      color: #5c6670;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      box-shadow: 0 1px 0 var(--line);
+    }
+
+    .participant-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .file-info {
+      grid-column: span 2;
+    }
+
+    .detail-file-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .detail-file-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid #edf0f3;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .detail-file-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #34404b;
+    }
+
+    .detail-file-format {
+      margin-left: 8px;
+      color: #8a939d;
+      font-size: 12px;
+    }
+
+    .detail-file-actions {
+      display: inline-flex;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .collect-file-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+    }
+
+    .reader-filter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 12px 0;
+    }
+
+    .collect-detail-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #collectDetailFilterWrap.hide {
+      display: none;
+    }
+
+    #batchSaveAsBtn:disabled {
+      cursor: not-allowed;
+      color: #aab4bd;
+      border-color: #e3e8ec;
+      background: #f4f6f8;
+    }
+
+    .collect-pagination {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      color: var(--muted);
+    }
+
+    .collect-pagination button {
+      min-width: 30px;
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #dfe5eb;
+      border-radius: 4px;
+      color: #52606d;
+      background: #fff;
+    }
+
+    .collect-pagination button.active {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .collect-pagination button:disabled {
+      cursor: not-allowed;
+      color: #b4bdc6;
+      background: #f6f7f8;
+    }
+
+    .reader-filter select {
+      height: 32px;
+      min-width: 138px;
+      border: 1px solid #dfe5eb;
+      border-radius: 4px;
+      padding: 0 8px;
+      background: #fff;
+    }
+
+    .detail-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      background: #fbfcfd;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-title {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .detail-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 270px;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .section-title {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
+    .mini-list {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .submitter {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .submitter:last-child { border-bottom: 0; }
+
+    .student strong { display: block; margin-bottom: 4px; }
+    .student span, .files span { color: var(--muted); font-size: 12px; }
+
+    .file-pill {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      margin: 2px 4px 2px 0;
+      padding: 0 8px;
+      border-radius: 4px;
+      background: #f5f8fa;
+      color: #3c4651;
+      font-size: 12px;
+    }
+
+    .unsubmitted {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: #5d6670;
+      line-height: 2;
+      background: #fff;
+    }
+
+    .archive-note {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #d7f2e9;
+      border-radius: 6px;
+      background: #f3fffb;
+      color: #18765c;
+      line-height: 1.6;
+    }
+
+    .phone-wrap {
+      position: sticky;
+      top: 18px;
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .phone-title {
+      width: 430px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #4b5560;
+      font-weight: 700;
+    }
+
+    .phone-mode-switch {
+      height: 30px;
+      display: inline-grid;
+      grid-template-columns: 76px 76px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px #e5e9ee;
+    }
+
+    .phone-mode-switch button {
+      color: #65717d;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .phone-mode-switch button.active {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .phone-role-label {
+      min-width: 118px;
+    }
+
+    .phone {
+      width: 390px;
+      height: 820px;
+      border-radius: 34px;
+      overflow: hidden;
+      background: #f3f5f8;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .screen {
+      height: 100%;
+      display: none;
+      flex-direction: column;
+      background: #f4f6f9;
+    }
+
+    .screen.active { display: flex; }
+
+    .statusbar {
+      height: 44px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      padding: 0 22px 8px;
+      background: #fff;
+      color: #0e1116;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .status-icons {
+      display: inline-flex;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .battery {
+      min-width: 30px;
+      height: 18px;
+      padding: 1px 5px;
+      border-radius: 6px;
+      background: #20242a;
+      color: #fff;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .app-head {
+      height: 58px;
+      display: grid;
+      grid-template-columns: 46px 1fr 46px;
+      align-items: center;
+      background: #fff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .back-app {
+      font-size: 28px;
+      color: #2f3740;
+    }
+
+    .workbench {
+      overflow: auto;
+      padding-bottom: 96px;
+    }
+
+    .category-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 55px;
+      align-items: center;
+      background: #fff;
+      color: #878d94;
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .category-tabs span.active {
+      color: var(--brand-dark);
+      position: relative;
+    }
+
+    .category-tabs span.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -13px;
+      width: 30px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+      transform: translateX(-50%);
+    }
+
+    .app-section {
+      margin: 22px 16px 0;
+    }
+
+    .app-section h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px 12px;
+      padding: 24px 16px 20px;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .app-entry {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      color: #4b535d;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .app-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      font-size: 25px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,.08);
+    }
+
+    .orange { background: #ef7440; }
+    .green { background: #4fc177; }
+    .sky { background: #56b7e7; }
+    .teal { background: var(--brand); }
+
+    .bottom-nav {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      height: 74px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      border-radius: 38px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 12px 30px rgba(36, 48, 62, .14);
+      text-align: center;
+      color: #222a33;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .bottom-nav .active {
+      color: var(--brand-dark);
+    }
+
+    .resource-app {
+      flex: 1;
+      overflow: auto;
+      padding: 10px 16px 22px;
+    }
+
+    .seg {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .status-seg {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .teacher-resource-tabs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .teacher-resource-tabs.hide,
+    .teacher-collect-tabs.hide,
+    .status-seg.hide,
+    .section-title.hide {
+      display: none;
+    }
+
+    .seg button {
+      height: 34px;
+      border-radius: 17px;
+      background: #fff;
+      color: #65707a;
+      font-weight: 700;
+    }
+
+    .seg button.active {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .task-card {
+      margin-bottom: 12px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(35, 47, 60, .04);
+    }
+
+    .mobile-resource-card {
+      margin-bottom: 10px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(35, 47, 60, .04);
+    }
+
+    .mobile-resource-main {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mobile-resource-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: #eefcf8;
+      color: var(--brand-dark);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .mobile-resource-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #16202b;
+      font-weight: 800;
+    }
+
+    .mobile-resource-meta {
+      margin-top: 4px;
+      color: #7a8590;
+      font-size: 12px;
+    }
+
+    .mobile-resource-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .folder-select {
+      margin-bottom: 10px;
+    }
+
+    .folder-select-trigger {
+      width: 100%;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: #fff;
+      color: #26313d;
+      font-weight: 800;
+      box-shadow: inset 0 0 0 1px #e5e9ee;
+    }
+
+    .folder-tree {
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(35, 47, 60, .04);
+    }
+
+    .folder-tree.show { display: grid; }
+
+    .app-sheet-body .folder-tree {
+      display: grid;
+      margin-top: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .folder-tree-node {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      border-radius: 8px;
+      color: #3f4853;
+      font-weight: 700;
+    }
+
+    .folder-tree-node.active {
+      background: #e8fbf5;
+      color: var(--brand-dark);
+    }
+
+    .folder-tree-node.level-1 { padding-left: 24px; }
+    .folder-tree-node.level-2 { padding-left: 42px; }
+
+    .mobile-fab {
+      position: absolute;
+      right: 20px;
+      bottom: 132px;
+      width: 54px;
+      height: 54px;
+      display: none;
+      place-items: center;
+      border-radius: 27px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+      box-shadow: 0 12px 24px rgba(28, 177, 136, .32);
+    }
+
+    .mobile-fab.show { display: grid; }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .task-top h4 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .task-meta {
+      display: grid;
+      gap: 6px;
+      color: #76808b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .task-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .mobile-btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 17px;
+      background: #eff4f6;
+      color: #3e4852;
+      font-weight: 700;
+    }
+
+    .mobile-btn.primary {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .mobile-btn:disabled {
+      cursor: not-allowed;
+      color: #9aa3ad;
+      background: #eef2f5;
+    }
+
+    .upload-box {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px dashed #99ddc9;
+      border-radius: 8px;
+      background: #f5fffb;
+      color: #2d725e;
+      line-height: 1.7;
+    }
+
+    .upload-box.show { display: block; }
+
+    .detail-app {
+      flex: 1;
+      overflow: auto;
+      padding: 10px 16px 98px;
+      background: #f4f6f9;
+    }
+
+    .upload-app {
+      flex: 1;
+      overflow: auto;
+      padding: 10px 16px 108px;
+      background: #f4f6f9;
+    }
+
+    .mobile-panel {
+      padding: 16px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(35, 47, 60, .04);
+    }
+
+    .mobile-panel h3 {
+      margin: 0 0 10px;
+      font-size: 19px;
+      line-height: 1.35;
+    }
+
+    .mobile-form {
+      display: grid;
+      gap: 13px;
+    }
+
+    .mobile-form label,
+    .mobile-form .mobile-form-field {
+      display: grid;
+      gap: 7px;
+      color: #4e5965;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .mobile-form input,
+    .mobile-form select,
+    .mobile-form textarea {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid #dfe5eb;
+      border-radius: 9px;
+      padding: 9px 11px;
+      background: #fff;
+      color: #1d2732;
+      font-size: 15px;
+      resize: vertical;
+    }
+
+    .mobile-form textarea {
+      line-height: 1.5;
+    }
+
+    .mobile-upload-tile {
+      width: 118px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #98dfcb;
+      border-radius: 8px;
+      background: #f4fffb;
+      color: var(--brand-dark);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .mobile-hint {
+      color: #8a939d;
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .mobile-form-error {
+      display: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #fff3f3;
+      color: #c94040;
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .mobile-form-error.show { display: block; }
+
+    .detail-status-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 11px;
+      margin: 14px 0;
+      color: #515b66;
+      line-height: 1.6;
+    }
+
+    .info-list div {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 8px;
+    }
+
+    .info-list b {
+      color: #8a939d;
+      font-weight: 600;
+    }
+
+    .mobile-file-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mobile-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mobile-section-head .section-title {
+      margin: 0;
+    }
+
+    .mobile-batch-save {
+      min-width: 62px;
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid var(--brand);
+      border-radius: 4px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .mobile-batch-save:disabled {
+      cursor: not-allowed;
+      border-color: #e1e7eb;
+      background: #f2f5f7;
+      color: #a7b1ba;
+    }
+
+    .mobile-file-select {
+      grid-template-columns: 20px minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .mobile-file-select.with-actions {
+      grid-template-columns: 20px minmax(0, 1fr) auto;
+      gap: 9px;
+      min-height: 72px;
+      padding: 10px 12px;
+    }
+
+    .mobile-file-select input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--brand);
+    }
+
+    .mobile-file-select strong,
+    .mobile-file-select small {
+      display: block;
+    }
+
+    .mobile-file-select small {
+      margin-top: 4px;
+      color: #7b8793;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .mobile-collect-file-info {
+      min-width: 0;
+    }
+
+    .mobile-collect-file-name {
+      display: flex;
+      min-width: 0;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .mobile-collect-file-name strong {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      color: #263442;
+    }
+
+    .mobile-collect-file-size {
+      flex: 0 0 auto;
+      color: #768391;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .mobile-collect-file-meta {
+      display: block;
+      margin-top: 5px;
+      color: #7b8793;
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: normal;
+      word-break: break-all;
+    }
+
+    .mobile-count-link {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--brand-dark);
+      font: inherit;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .mobile-file {
+      min-height: 38px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f5f8fa;
+      color: #3f4853;
+      font-size: 13px;
+    }
+
+    .mobile-file span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mobile-file-actions {
+      display: inline-flex;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .deadline-warning {
+      margin: 14px 0;
+      padding: 11px 12px;
+      border: 1px solid #ffd9d9;
+      border-radius: 8px;
+      background: #fff7f7;
+      color: #b83c3c;
+      line-height: 1.6;
+    }
+
+    .file-content-preview {
+      min-height: 560px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #fff;
+      color: #1d2732;
+      font-size: 16px;
+      line-height: 1.9;
+      box-shadow: 0 4px 14px rgba(35, 47, 60, .04);
+    }
+
+    .app-sheet-mask {
+      position: absolute;
+      inset: 0;
+      z-index: 18;
+      display: none;
+      align-items: end;
+      background: rgba(17, 27, 38, .34);
+    }
+
+    .app-sheet-mask.show { display: flex; }
+
+    .app-sheet {
+      width: 100%;
+      padding: 16px;
+      border-radius: 18px 18px 0 0;
+      background: #fff;
+      box-shadow: 0 -14px 30px rgba(28, 39, 52, .16);
+    }
+
+    .app-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      color: #16202b;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .app-sheet-body {
+      display: grid;
+      gap: 10px;
+    }
+
+    .app-sheet-body input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #dfe5eb;
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 15px;
+    }
+
+    .app-sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .app-sheet-actions .mobile-btn {
+      height: 42px;
+      border-radius: 21px;
+      font-size: 15px;
+    }
+
+    .detail-bottom-action {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 10px 0 0;
+      background: linear-gradient(180deg, rgba(244,246,249,0), #f4f6f9 35%);
+    }
+
+    .detail-bottom-action .mobile-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 22px;
+      font-size: 16px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 20;
+      min-width: 180px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      background: rgba(32, 40, 51, .92);
+      color: #fff;
+      text-align: center;
+      transform: translateX(-50%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+
+    .toast.show { opacity: 1; }
+
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      place-items: center;
+      background: rgba(21, 31, 42, .28);
+    }
+
+    .modal-mask.show { display: grid; }
+
+    .modal {
+      width: 430px;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 16px 45px rgba(20, 32, 44, .22);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-body label,
+    .modal-field {
+      display: grid;
+      gap: 6px;
+      color: #4a535e;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .required-mark {
+      color: #e45a5a;
+      font-weight: 700;
+    }
+
+    .modal-body select,
+    .modal-body input,
+    .modal-body textarea {
+      min-height: 34px;
+      border: 1px solid #dfe5eb;
+      border-radius: 4px;
+      padding: 7px 9px;
+      resize: vertical;
+    }
+
+    .rules-modal {
+      width: min(620px, calc(100vw - 36px));
+    }
+
+    .rules-body {
+      max-height: 62vh;
+      overflow: auto;
+      display: grid;
+      gap: 14px;
+      line-height: 1.65;
+      color: #34404c;
+    }
+
+    .rules-block {
+      display: grid;
+      gap: 6px;
+    }
+
+    .rules-block h4 {
+      margin: 0;
+      color: #16202b;
+      font-size: 15px;
+    }
+
+    .rules-block ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .app-sheet-body .rules-body {
+      max-height: 56vh;
+      padding-right: 2px;
+      font-size: 14px;
+    }
+
+    .upload-button {
+      width: 112px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid var(--brand);
+      border-radius: 4px;
+      background: #f2fffb;
+      color: var(--brand-dark);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .upload-real-input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .upload-hint {
+      color: #8a939d;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .upload-error {
+      display: none;
+      padding: 8px 10px;
+      border: 1px solid #ffd2d2;
+      border-radius: 4px;
+      background: #fff6f6;
+      color: #c53d3d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .upload-error.show { display: block; }
+
+    .uploaded-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .uploaded-file {
+      min-height: 36px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 10px;
+      border: 1px solid #edf0f3;
+      border-radius: 4px;
+      background: #f8fafb;
+    }
+
+    .uploaded-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #34404b;
+    }
+
+    .uploaded-meta {
+      margin-left: 6px;
+      color: #8a939d;
+      font-size: 12px;
+    }
+
+    .delete-file {
+      color: #d55151;
+      padding: 0;
+    }
+
+    .modal-foot {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .picker-input {
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .target-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      background: rgba(21, 31, 42, .34);
+    }
+
+    .target-mask.show { display: grid; }
+
+    .target-modal {
+      width: min(1120px, calc(100vw - 64px));
+      height: min(780px, calc(100vh - 64px));
+      display: grid;
+      grid-template-rows: 58px 1fr 58px;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 18px 48px rgba(20, 32, 44, .24);
+    }
+
+    .target-head,
+    .target-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      font-size: 18px;
+    }
+
+    .target-head button {
+      color: #8a939d;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .target-main {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .target-left,
+    .target-right {
+      min-width: 0;
+      min-height: 0;
+      padding: 24px;
+    }
+
+    .target-left {
+      border-right: 1px solid var(--line);
+    }
+
+    .target-tabs {
+      width: min(540px, 100%);
+      height: 44px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+      border: 1px solid #d8dde3;
+      border-radius: 22px;
+      margin-bottom: 28px;
+    }
+
+    .target-tab {
+      color: #1b2835;
+      font-weight: 700;
+    }
+
+    .target-tab.active {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .target-crumb {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      color: #8a939d;
+    }
+
+    .target-list {
+      max-height: calc(100% - 96px);
+      overflow: auto;
+      padding-right: 10px;
+    }
+
+    .target-row {
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: 24px 54px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      color: #1b2835;
+      font-size: 16px;
+    }
+
+    .target-row.all {
+      grid-template-columns: 24px minmax(0, 1fr);
+      min-height: 40px;
+      margin-bottom: 6px;
+    }
+
+    .target-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #d8dde3;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .target-checkbox.checked {
+      border-color: var(--brand);
+      background: var(--brand);
+      box-shadow: inset 0 0 0 4px #fff;
+    }
+
+    .target-icon {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: #effcf8;
+      color: var(--brand);
+      font-weight: 800;
+    }
+
+    .target-sub {
+      color: var(--brand-dark);
+      padding-left: 16px;
+      border-left: 1px solid #d8dde3;
+    }
+
+    .target-right h3 {
+      margin: 0 0 18px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .target-selected-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: flex-start;
+    }
+
+    .target-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding: 5px 10px;
+      border-radius: 16px;
+      background: #effcf8;
+      color: var(--brand-dark);
+      font-size: 14px;
+    }
+
+    .target-chip button {
+      color: #8a939d;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .target-empty {
+      color: #8a939d;
+      font-size: 14px;
+    }
+
+    .target-foot {
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      border-bottom: none;
+    }
+
+    @media (max-width: 1260px) {
+      body { min-width: 320px; }
+      .prototype { grid-template-columns: 1fr; }
+      .phone-wrap { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="prototype">
+    <section class="pc" aria-label="PC老师端资源中心">
+      <aside class="sidebar">
+        <div class="logo"><span class="logo-mark">档</span>资源中心</div>
+        <div class="nav-item"><span class="nav-icon">档</span>我的档案</div>
+        <div class="nav-item"><span class="nav-icon">资</span>我的资源</div>
+        <div class="nav-item"><span class="nav-icon">校</span>学校资源</div>
+        <div class="nav-item active"><span class="nav-icon">收</span>资料收集</div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <div class="topbar-left"><button class="hamburger" type="button">≡</button></div>
+          <div class="topbar-right">
+            <button class="prd-dot" type="button" data-prd-rules="pc" aria-label="查看PRD规则"></button>
+            <div class="profile"><span class="avatar"></span>侯东旭⌄</div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <span class="tab-chip">我的档案 ×</span>
+          <span class="tab-chip active">资料收集 ×</span>
+        </div>
+
+        <div class="content">
+          <div class="resource-layout">
+            <section class="work-pane">
+              <div class="pc-list-page" id="pcListPage">
+                <div class="pc-collect-tabs" aria-label="资料收集范围">
+                  <button class="active" type="button" data-pc-collect-view="published">我发布的</button>
+                  <button type="button" data-pc-collect-view="received">我收到的</button>
+                </div>
+                <div class="head-actions pc-collect-actions">
+                  <button class="btn primary" type="button" id="pagePrimaryAction" data-open-modal="collect">新增收集</button>
+                </div>
+                <div class="filters">
+                  <label class="field">名称<input id="nameFilter" type="text" placeholder="请输入"></label>
+                  <label class="field">状态
+                    <select id="statusFilter">
+                      <option value="">全部</option>
+                      <option value="未开始">未开始</option>
+                      <option value="进行中">进行中</option>
+                      <option value="已结束">已结束</option>
+                    </select>
+                  </label>
+                  <label class="field">发布时间
+                    <div class="date-range">
+                      <input id="startDateFilter" type="date">
+                      <span>至</span>
+                      <input id="endDateFilter" type="date">
+                    </div>
+                  </label>
+                  <button class="btn primary" type="button" id="searchBtn">查询</button>
+                  <button class="btn" type="button" id="resetBtn">重置</button>
+                </div>
+
+                <table>
+                  <thead id="resourceTableHead"></thead>
+                  <tbody id="resourceRows"></tbody>
+                </table>
+              </div>
+
+              <div class="pc-detail-page" id="publishDetailPage">
+                <div class="detail-toolbar">
+                  <button class="btn" type="button" id="backPublishList">返回列表</button>
+                </div>
+                <div class="info-grid" id="publishDetailInfo"></div>
+                <div class="reader-filter">
+                  <strong>人员阅读列表</strong>
+                  <label class="field">状态
+                    <select id="readStatusFilter">
+                      <option value="">全部</option>
+                      <option value="已读">已读</option>
+                      <option value="未读">未读</option>
+                    </select>
+                  </label>
+                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 22%;">学生姓名</th>
+                      <th style="width: 22%;">家长姓名</th>
+                      <th style="width: 18%;">阅读状态</th>
+                      <th style="width: 38%;">已读时间</th>
+                    </tr>
+                  </thead>
+                  <tbody id="readerRows"></tbody>
+                </table>
+              </div>
+
+              <div class="pc-detail-page" id="collectDetailPage">
+                <div class="detail-toolbar">
+                  <button class="btn" type="button" id="backCollectList">返回列表</button>
+                </div>
+                <div class="info-grid" id="collectDetailInfo"></div>
+                <div class="reader-filter">
+                  <strong id="collectDetailListTitle">资料收集列表</strong>
+                  <div class="collect-detail-actions" id="collectDetailFilterWrap">
+                    <label class="field">提交人员<input id="collectStudentFilter" type="text" placeholder="请输入"></label>
+                    <button class="btn" type="button" id="batchSaveAsBtn" disabled>另存为</button>
+                  </div>
+                </div>
+                <table>
+                  <thead id="collectDetailTableHead"></thead>
+                  <tbody id="collectSubmissionRows"></tbody>
+                </table>
+                <div class="collect-pagination" id="collectDetailPagination"></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <aside class="phone-wrap">
+      <div class="phone-title">
+        <span>App 端</span>
+        <div class="phone-mode-switch">
+          <button type="button" data-app-role="teacher">教师端</button>
+          <button class="active" type="button" data-app-role="parent">家长端</button>
+        </div>
+        <span class="phone-role-label" id="phoneRoleLabel">家长端资料收集</span>
+      </div>
+      <div class="phone">
+        <section class="screen active" id="workbenchScreen">
+          <div class="statusbar"><span>18:12</span><span class="status-icons">▮▮▮ WiFi <span class="battery">27</span></span></div>
+          <div class="app-head"><span></span><span>工作台</span><button class="app-prd-dot" type="button" data-prd-rules="app" aria-label="查看PRD规则"></button></div>
+          <div class="workbench">
+            <div class="category-tabs">
+              <span>教育管理</span>
+              <span>校园办公</span>
+              <span>校园防霸凌</span>
+              <span class="active">校园信息</span>
+            </div>
+            <div class="app-section">
+              <h3>校园信息</h3>
+              <div class="app-grid">
+                <button class="app-entry" type="button"><span class="app-icon orange">历</span><span>校历</span></button>
+                <button class="app-entry" type="button"><span class="app-icon green">箱</span><span>意见箱</span></button>
+                <button class="app-entry" type="button"><span class="app-icon sky">发</span><span>信息发布</span></button>
+                <button class="app-entry" type="button" id="openResourceApp"><span class="app-icon teal">资</span><span>资源管理</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div>小壹 AI</div><div>首页</div><div>消息</div><div class="active">工作台</div><div>我的</div>
+          </div>
+        </section>
+
+        <section class="screen" id="resourceScreen">
+          <div class="statusbar"><span>18:12</span><span class="status-icons">▮▮▮ WiFi <span class="battery">27</span></span></div>
+          <div class="app-head">
+            <button class="back-app" type="button" id="backWorkbench">‹</button>
+            <span>资源管理</span>
+            <button class="app-prd-dot" type="button" data-prd-rules="app" aria-label="查看PRD规则"></button>
+          </div>
+          <div class="resource-app">
+            <div class="seg teacher-resource-tabs hide" id="teacherResourceTabs">
+              <button class="active" type="button" data-teacher-resource-tab="我的资源">我的资源</button>
+              <button type="button" data-teacher-resource-tab="学校资源">学校资源</button>
+              <button type="button" data-teacher-resource-tab="资料收集">资料收集</button>
+            </div>
+            <div class="seg teacher-collect-tabs hide" id="teacherCollectTabs">
+              <button class="active" type="button" data-teacher-collect-view="published">我发布的</button>
+              <button type="button" data-teacher-collect-view="received">我收到的</button>
+            </div>
+            <div class="section-title" id="appResourceTitle">资料收集</div>
+            <div class="seg status-seg" id="appStatusFilters"></div>
+            <div id="appTaskList"></div>
+          </div>
+          <button class="mobile-fab" type="button" id="openAppCollectCreate">+</button>
+        </section>
+
+        <section class="screen" id="resourceDetailScreen">
+          <div class="statusbar"><span>18:12</span><span class="status-icons">▮▮▮ WiFi <span class="battery">27</span></span></div>
+          <div class="app-head">
+            <button class="back-app" type="button" id="backResourceList">‹</button>
+            <span>资料详情</span>
+            <button class="app-prd-dot" type="button" data-prd-rules="app" aria-label="查看PRD规则"></button>
+          </div>
+          <div class="detail-app" id="appDetailBody"></div>
+          <div class="detail-bottom-action" id="appDetailAction"></div>
+        </section>
+        <section class="screen" id="appParticipantScreen">
+          <div class="statusbar"><span>18:12</span><span class="status-icons">▮▮▮ WiFi <span class="battery">27</span></span></div>
+          <div class="app-head">
+            <button class="back-app" type="button" id="backAppParticipant">‹</button>
+            <span id="appParticipantTitle">发送人数</span>
+            <button class="app-prd-dot" type="button" data-prd-rules="app" aria-label="查看PRD规则"></button>
+          </div>
+          <div class="detail-app" id="appParticipantBody"></div>
+        </section>
+        <section class="screen" id="appCollectCreateScreen">
+          <div class="statusbar"><span>18:12</span><span class="status-icons">■■■ WiFi <span class="battery">27</span></span></div>
+          <div class="app-head">
+            <button class="back-app" type="button" id="backAppCollectList">‹</button>
+            <span>发布收集</span>
+            <button class="app-prd-dot" type="button" data-prd-rules="app" aria-label="查看PRD规则"></button>
+          </div>
+          <div class="detail-app">
+            <div class="mobile-panel">
+              <div class="mobile-form">
+                <label><span class="field-label"><span class="required-mark">*</span>收集名称</span><input id="appCollectTitleInput" value="春季学籍材料收集"></label>
+                <label><span class="field-label"><span class="required-mark">*</span>收集对象</span><input class="picker-input" id="appCollectTargetInput" value="一年级1班家长" readonly data-open-target-picker></label>
+                <label><span class="field-label"><span class="required-mark">*</span>开始方式</span>
+                  <select id="appCollectStartMode">
+                    <option value="now">立即开始</option>
+                    <option value="schedule">定时开始</option>
+                  </select>
+                </label>
+                <label id="appCollectStartTimeField" style="display:none;"><span class="field-label"><span class="required-mark">*</span>开始时间</span><input id="appCollectStartTime" type="datetime-local" step="1"></label>
+                <label><span class="field-label"><span class="required-mark">*</span>截止时间</span><input id="appCollectDeadlineInput" type="datetime-local" step="1" value="2026-06-20T18:00:00"></label>
+                <label><span class="field-label"><span class="required-mark">*</span>上传要求</span><textarea id="appCollectRequirementInput" rows="4">请上传户口本首页、学生页及监护人页照片或 PDF。</textarea></label>
+                <div class="mobile-form-field">
+                  <span>说明附件</span>
+                  <input class="upload-real-input" id="appCollectAttachmentInput" type="file" accept=".doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.pdf">
+                  <button class="mobile-upload-tile" type="button" id="chooseAppCollectAttachment">+ 上传附件</button>
+                  <span class="mobile-hint">仅支持上传 1 个附件，支持 Word、PPT、Excel、PNG、JPG、PDF 格式，单个文件不超过 15M。</span>
+                  <span class="mobile-form-error" id="appCollectFormError"></span>
+                  <div class="mobile-file-list" id="appCollectAttachmentList"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-bottom-action">
+            <button class="mobile-btn primary" type="button" id="confirmAppCollectCreate">确认发布</button>
+          </div>
+        </section>
+        <input class="upload-real-input" id="appUploadInput" type="file" multiple accept=".doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.pdf">
+        <div class="app-sheet-mask" id="appSheetMask">
+          <div class="app-sheet">
+            <div class="app-sheet-head">
+              <span id="appSheetTitle">编辑</span>
+              <button type="button" id="closeAppSheet">×</button>
+            </div>
+            <div class="app-sheet-body" id="appSheetBody"></div>
+            <div class="app-sheet-actions" id="appSheetActions"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal-mask" id="modalMask">
+    <div class="modal">
+      <div class="modal-head">
+        <span id="modalTitle">发布收集</span>
+        <button type="button" id="closeModal">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot">
+        <button class="btn" type="button" id="cancelModal">取消</button>
+        <button class="btn primary" type="button" id="confirmModal">确认</button>
+      </div>
+    </div>
+  </div>
+  <div class="target-mask" id="targetSelectMask">
+    <div class="target-modal">
+      <div class="target-head">
+        <span>选择</span>
+        <button type="button" id="closeTargetPicker">×</button>
+      </div>
+      <div class="target-main">
+        <section class="target-left">
+          <div class="target-tabs">
+            <button class="target-tab active" type="button" data-target-tab="staff">教职工</button>
+            <button class="target-tab" type="button" data-target-tab="parent">家长</button>
+          </div>
+          <div class="target-crumb" id="targetCrumb"></div>
+          <div class="target-list" id="targetList"></div>
+        </section>
+        <section class="target-right">
+          <h3>已选</h3>
+          <div class="target-selected-list" id="targetSelectedList"></div>
+        </section>
+      </div>
+      <div class="target-foot">
+        <button class="btn" type="button" id="cancelTargetPicker">取消</button>
+        <button class="btn primary" type="button" id="confirmTargetPicker">确定</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast">操作成功</div>
+
+  <script>
+    const resources = [
+      { id: 1, name: "春季学籍材料收集", type: "收集", target: "一年级1班", publishDate: "2026-06-10", deadline: "2026-06-20", sendCount: 36, should: 36, submitted: 18, status: "进行中" },
+      { id: 2, name: "暑期安全告知书", type: "发布", target: "一年级1班", publishDate: "2026-06-12", publishTime: "2026-06-12 09:00", sendCount: 36, readCount: 28, deadline: "-", should: 36, submitted: 36, status: "已发布", files: ["暑期安全告知书.pdf", "暑期安全注意事项.docx", "防溺水安全海报.png"] },
+      { id: 5, name: "端午假期温馨提示", type: "发布", target: "一年级1班", publishDate: "2026-06-15", publishTime: "2026-06-15 08:30", sendCount: 36, readCount: 0, deadline: "-", should: 36, submitted: 0, status: "未发布", files: ["端午假期安排.pdf", "假期安全清单.xlsx"] },
+      { id: 6, name: "周末阅读材料", type: "发布", target: "一年级1班", publishDate: "2026-06-08", publishTime: "2026-06-08 17:30", sendCount: 36, readCount: 12, deadline: "-", should: 36, submitted: 0, status: "已撤回", files: ["周末阅读材料.pdf", "亲子阅读记录表.docx"] },
+      { id: 3, name: "校服尺码信息收集", type: "收集", target: "一年级1班", publishDate: "2026-06-09", deadline: "2026-06-14", sendCount: 36, should: 36, submitted: 30, status: "未开始" },
+      { id: 4, name: "体检回执单收集", type: "收集", target: "一年级1班", publishDate: "2026-05-20", deadline: "2026-06-01", sendCount: 36, should: 36, submitted: 34, status: "已结束" }
+    ];
+
+    const submitters = [
+      { student: "王小一", parent: "王小一家长", time: "2026-06-11 09:18", files: ["户口本首页.jpg", "学生页.pdf"], archived: false },
+      { student: "李明轩", parent: "李明轩家长", time: "2026-06-11 10:26", files: ["学籍材料.zip"], archived: true },
+      { student: "陈可欣", parent: "陈可欣家长", time: "2026-06-12 08:42", files: ["监护人页.png", "学生页.png"], archived: false },
+      { student: "赵一诺", parent: "赵一诺家长", time: "2026-06-12 12:05", files: ["户口本.pdf"], archived: false }
+    ];
+
+    const collectSubmissions = [
+      { student: "王小一", parent: "王小一家长", status: "已提交", files: ["王小一学籍材料.pdf", "王小一户口本首页.jpg", "王小一监护人页.png"], submitTime: "2026-06-11 09:18" },
+      { student: "李明轩", parent: "李明轩家长", status: "已提交", files: ["李明轩户口本.zip", "李明轩信息确认表.xlsx"], submitTime: "2026-06-11 10:26" },
+      { student: "陈可欣", parent: "陈可欣家长", status: "未提交", files: [], submitTime: "-" },
+      { student: "赵一诺", parent: "赵一诺家长", status: "已提交", files: ["赵一诺户口本.pdf"], submitTime: "2026-06-12 12:05" },
+      { student: "刘思远", parent: "刘思远家长", status: "未提交", files: [], submitTime: "-" }
+    ];
+
+    const collectionParticipantDirectory = [
+      "王小一", "李明轩", "赵一诺", "周子涵", "吴雨桐", "郑子墨", "孙浩然", "何佳怡", "高梓轩", "林诗涵", "黄宇辰", "马欣妍", "朱梓涵", "胡泽宇", "罗语嫣", "徐嘉禾", "梁子轩", "谢雨菲",
+      "陈可欣", "刘思远", "张语晨", "杨思远", "许诺言", "邓子航", "曹欣怡", "冯一鸣", "程诗涵", "潘子睿", "袁梓萱", "沈浩宇", "蒋依诺", "苏子昂", "彭雨欣", "蔡明哲", "杜若曦", "唐子涵"
+    ].map(name => ({ name, organization: "一年级1班" }));
+
+    const collectFileSizeMap = {
+      "王小一学籍材料.pdf": "2.4M",
+      "王小一户口本首页.jpg": "1.8M",
+      "王小一监护人页.png": "1.2M",
+      "李明轩户口本.zip": "3.6M",
+      "李明轩信息确认表.xlsx": "420KB",
+      "赵一诺户口本.pdf": "2.1M"
+    };
+
+    const receivedCollects = [
+      { id: "received-1", name: "2026年教师继续教育证明材料", publisher: "教师发展中心", publishDate: "2026-06-11 09:00:00", deadline: "2026-06-22 18:00", status: "未上传", requirement: "请上传本学期继续教育培训证明。", files: [], submitTime: "-" },
+      { id: "received-2", name: "教研活动成果材料收集", publisher: "教学处", publishDate: "2026-06-08 10:30:00", deadline: "2026-06-18 18:00", status: "已上传", requirement: "请上传教研活动成果材料及相关附件。", files: ["侯老师教研活动成果.pdf", "课堂观察记录.docx"], submitTime: "2026-06-12 15:30" },
+      { id: "received-3", name: "校园安全责任书收集", publisher: "政教处", publishDate: "2026-05-20 14:00:00", deadline: "2026-06-01 18:00", status: "已结束", requirement: "请按要求提交签署后的安全责任书。", files: ["侯老师安全责任书.pdf"], submitTime: "2026-05-28 09:20" }
+    ];
+
+    const appTasks = [
+      { id: "a1", resourceId: 1, category: "资料收集", title: "春季学籍材料收集", target: "一年级1班", sendCount: 36, submittedCount: 18, type: "待上传", teacher: "侯老师", publishTime: "2026-06-10 09:00", deadline: "2026-06-20 18:00", desc: "请上传户口本首页、学生页及监护人页。", teacherFiles: ["材料填写说明.pdf"], uploadFiles: [] },
+      { id: "a2", resourceId: 2, category: "资料发布", title: "暑期安全告知书", target: "一年级1班", sendCount: 36, readCount: 28, type: "待查看", teacher: "侯老师", publishTime: "2026-06-12 09:00", deadline: "长期有效", desc: "请查看并下载暑期安全注意事项。", teacherFiles: ["暑期安全告知书.pdf", "暑期安全注意事项.docx", "防溺水安全海报.png"], uploadFiles: [] },
+      { id: "a7", category: "资料发布", title: "防溺水安全提醒", target: "一年级1班", sendCount: 36, readCount: 0, type: "待查看", teacher: "侯老师", publishTime: "2026-06-13 10:00", deadline: "长期有效", desc: "请家长查看防溺水安全提醒并和孩子共同阅读。", teacherFiles: ["防溺水安全提醒.pdf", "防溺水承诺书.docx"], uploadFiles: [] },
+      { id: "a6", category: "资料发布", title: "周末阅读材料", target: "一年级1班", sendCount: 36, readCount: 12, type: "已查看", teacher: "侯老师", publishTime: "2026-06-08 17:30", deadline: "长期有效", desc: "请家长陪同孩子完成周末阅读材料。", teacherFiles: ["周末阅读材料.pdf", "亲子阅读记录表.docx"], uploadFiles: [], readTime: "2026-06-09 08:12" },
+      { id: "a3", resourceId: 4, category: "资料收集", title: "体检回执单收集", target: "一年级1班", sendCount: 36, submittedCount: 34, type: "已上传", teacher: "侯老师", publishTime: "2026-05-20 10:00", deadline: "2026-06-01 18:00", desc: "您已提交体检回执单。", teacherFiles: ["体检回执填写说明.pdf"], uploadFiles: ["王小一体检回执.jpg", "王小一体检确认表.pdf"], submitTime: "2026-05-28 19:35" },
+      { id: "a4", resourceId: 3, category: "资料收集", title: "校服尺码信息收集", target: "一年级1班", sendCount: 36, submittedCount: 30, type: "待上传", teacher: "侯老师", publishTime: "2026-06-09 08:30", deadline: "2026-06-14 18:00", desc: "请上传校服尺码确认截图。", teacherFiles: ["尺码表.pdf"], uploadFiles: [] },
+      { id: "a5", category: "资料收集", title: "端午假期出行材料补充", target: "一年级1班", sendCount: 36, submittedCount: 0, type: "待上传", status: "已结束", teacher: "侯老师", publishTime: "2026-05-30 14:00", deadline: "2026-06-05 18:00", desc: "请按模板填写端午假期出行材料，并上传 PDF 或图片。", teacherFiles: ["出行材料模板.pdf"], uploadFiles: [] }
+    ];
+
+    const teacherMyResources = [
+      { name: "暑期安全告知书.pdf", size: "2.4M", time: "2026-06-12 09:00", format: "PDF", folder: "班级通知" },
+      { name: "班级阅读材料.docx", size: "860KB", time: "2026-06-08 17:30", format: "Word", folder: "教学资料" },
+      { name: "学生信息导入模板.xlsx", size: "420KB", time: "2026-06-03 11:20", format: "Excel", folder: "学生材料" }
+    ];
+
+    const teacherSchoolResources = [
+      { name: "教学教研", size: "文件夹", time: "2026-06-11 10:00", format: "夹", folder: "根目录", isFolder: true, targetFolder: "教学教研" },
+      { name: "课件", size: "文件夹", time: "2026-06-09 15:40", format: "夹", folder: "根目录", isFolder: true, targetFolder: "课件" },
+      { name: "校园安全培训.pptx", size: "5.8M", time: "2026-06-02 14:10", format: "PPT", folder: "根目录" },
+      { name: "集体备课记录.docx", size: "780KB", time: "2026-06-06 10:30", format: "Word", folder: "教学教研" },
+      { name: "数学课件.pptx", size: "4.3M", time: "2026-06-08 14:20", format: "PPT", folder: "课件" }
+    ];
+
+    const publishReaders = [
+      { student: "王小一", parent: "王小一家长", status: "已读", readTime: "2026-06-12 09:18" },
+      { student: "李明轩", parent: "李明轩家长", status: "已读", readTime: "2026-06-12 10:26" },
+      { student: "陈可欣", parent: "陈可欣家长", status: "未读", readTime: "-" },
+      { student: "赵一诺", parent: "赵一诺家长", status: "已读", readTime: "2026-06-12 12:05" },
+      { student: "刘思远", parent: "刘思远家长", status: "未读", readTime: "-" }
+    ];
+
+    let activeAppRole = "parent";
+    let activeTeacherResourceTab = "资料收集";
+    let activeTeacherCollectView = "published";
+    let activeMobileCollectTaskId = "";
+    let selectedMobileCollectFiles = new Set();
+    let pendingMobileBatchSaveFiles = [];
+    let activeMyResourceFolder = "全部";
+    let activeSchoolResourceFolder = "根目录";
+    let showMobileFolderTree = false;
+    let activeAppFilter = "全部";
+    let activeResourceType = "收集";
+    let pcCollectViewMode = "published";
+    let archivedCount = 3;
+    let publishUploadedFiles = [];
+    let collectAttachmentFiles = [];
+    let pcCollectUploadFiles = [];
+    let pcCollectUploadResourceId = "";
+    let pcReceivedUploadTaskId = "";
+    let pendingEndCollectId = "";
+    let pendingDeleteConfirm = null;
+    let selectedCollectTargets = ["一年级1班家长"];
+    let targetPickerTab = "staff";
+    let targetPickerDraft = [];
+    let appUploadFiles = [];
+    let appUploadTaskId = "";
+    let appCollectAttachmentFiles = [];
+    let pendingMobileResourceIndex = -1;
+    let pendingAppReadTaskId = "";
+    let activeCollectDetailResourceId = "";
+    let activeCollectDetailMode = "published";
+    let selectedCollectFiles = new Set();
+    let collectDetailPage = 1;
+    const collectDetailPageSize = 5;
+    let pendingBatchSaveFiles = [];
+    const collectTargetOptions = {
+      staff: ["教学处", "教务", "测试", "教务处", "（示例）校领导", "政教处", "总务处"],
+      parent: ["一年级1班家长", "一年级2班家长", "一年级全年级家长", "二年级1班家长", "全校家长"]
+    };
+    const publishAllowedExtensions = ["doc", "docx", "ppt", "pptx", "xls", "xlsx", "png", "jpg", "jpeg", "pdf"];
+    const publishMaxFileSize = 15 * 1024 * 1024;
+    const publishMaxFileCount = 5;
+
+    const rows = document.getElementById("resourceRows");
+    const tableHead = document.getElementById("resourceTableHead");
+    const toast = document.getElementById("toast");
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function formatDateTime(value) {
+      if (!value || value === "-" || value === "长期有效") return value || "-";
+      const normalized = String(value).replace("T", " ");
+      if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return `${normalized} 00:00:00`;
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(normalized)) return `${normalized}:00`;
+      return normalized;
+    }
+
+    function openDeleteConfirm(config) {
+      pendingDeleteConfirm = {
+        title: "删除确认",
+        confirmText: "确认删除",
+        cancelText: "取消",
+        successText: "已删除",
+        surface: "pc",
+        ...config,
+        message: "确定要删除么？删除后不可恢复"
+      };
+
+      if (pendingDeleteConfirm.surface === "app") {
+        const mask = document.getElementById("appSheetMask");
+        const title = document.getElementById("appSheetTitle");
+        const body = document.getElementById("appSheetBody");
+        const actions = document.getElementById("appSheetActions");
+        mask.dataset.mode = "deleteConfirm";
+        title.textContent = pendingDeleteConfirm.title;
+        body.innerHTML = `
+          <div class="deadline-warning" style="margin:0;">${pendingDeleteConfirm.message}</div>
+        `;
+        actions.innerHTML = `
+          <button class="mobile-btn" type="button" id="cancelAppSheet">${pendingDeleteConfirm.cancelText}</button>
+          <button class="mobile-btn primary" type="button" id="confirmDeleteAction">${pendingDeleteConfirm.confirmText}</button>
+        `;
+        actions.style.gridTemplateColumns = "";
+        mask.classList.add("show");
+        return;
+      }
+
+      const mask = document.getElementById("modalMask");
+      const modal = mask.querySelector(".modal");
+      modal.classList.remove("rules-modal");
+      document.getElementById("modalTitle").textContent = pendingDeleteConfirm.title;
+      document.getElementById("confirmModal").textContent = pendingDeleteConfirm.confirmText;
+      document.getElementById("modalBody").innerHTML = `
+        <div class="deadline-warning" style="margin:0;">${pendingDeleteConfirm.message}</div>
+      `;
+      mask.dataset.mode = "deleteConfirm";
+      mask.classList.add("show");
+    }
+
+    function confirmDeleteAction() {
+      if (!pendingDeleteConfirm) return;
+      const config = pendingDeleteConfirm;
+      pendingDeleteConfirm = null;
+      config.onConfirm?.();
+      if (config.surface === "app") {
+        closeAppResourceSheet();
+      } else {
+        closeModal();
+      }
+      showToast(config.successText);
+    }
+
+    function renderRules(title, sections) {
+      return `
+        <div class="rules-body">
+          ${sections.map(section => `
+            <div class="rules-block">
+              <h4>${section.title}</h4>
+              <ul>${section.items.map(item => `<li>${item}</li>`).join("")}</ul>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function getPcRules() {
+      return getDetailedPcRules();
+    }
+
+    function getAppRules() {
+      return getDetailedAppRules();
+    }
+
+    function getDetailedPcRules() {
+      const isCollectDetail = document.getElementById("collectDetailPage")?.classList.contains("show");
+      if (isCollectDetail && activeCollectDetailMode === "published") {
+        return {
+          title: "PC 我发布的资料收集详情 PRD 规则",
+          sections: [
+            { title: "基本信息", items: ["展示收集名称、发布对象、收集状态、发布时间、截止时间、发送人数、提交人数、未提交人数。", "发布时间和截止时间统一展示到秒。", "提交人数和未提交人数可点击，点击后弹窗展示姓名、班级/部门；名单采用滚动区域。"] },
+            { title: "文件列表", items: ["列表按文件维度展示文件名称、文件大小、提交人员、提交时间和操作。", "每个文件提供预览、下载操作；预览打开文件预览，下载保存至本地。", "支持单选和全选；全选范围为当前筛选结果。", "列表右下提供分页，每页5条。"] },
+            { title: "批量另存为", items: ["未选文件时另存为按钮置灰；选择文件后变为绿色可点击。", "另存为支持选择我的资源或学校资源，以及具体目标文件夹。", "同一目标文件夹出现同名文件时不重复导入，并提示已存在文件。"] },
+            { title: "边界", items: ["详情页不展示新增收集按钮。", "返回列表后保留任务与筛选状态。"] }
+          ]
+        };
+      }
+      if (isCollectDetail && activeCollectDetailMode === "received") {
+        return {
+          title: "PC 我收到的资料收集详情 PRD 规则",
+          sections: [
+            { title: "基本信息", items: ["展示收集名称、发布人、状态、发布时间、截止时间和上传要求。", "发布时间、截止时间统一使用 YYYY-MM-DD HH:mm:ss 格式，精确到秒。", "状态仅为未上传、已上传、已结束。"] },
+            { title: "我的资料", items: ["以文件维度展示当前教师已提交的文件名称、文件大小、提交时间和操作。", "每个文件支持预览、下载；预览打开文件预览，下载保存至本地。"] },
+            { title: "上传规则", items: ["未上传显示上传资料，已上传显示继续上传；两者均调起上传资料弹窗。", "上传弹窗只展示文件选择区域，不展示提交人员和收集任务字段。", "最多上传 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个文件不超过 15M；重复、超数量、格式不支持或超大小时给出文字提示。", "已结束仅允许查看自己的资料，上传入口置灰且不可点击。"] },
+            { title: "页面操作", items: ["详情页不展示新增收集按钮。", "点击返回列表保留当前页签和筛选条件。"] }
+          ]
+        };
+      }
+      if (!isCollectDetail && pcCollectViewMode === "published") {
+        return {
+          title: "PC 我发布的资料收集列表页 PRD 规则",
+          sections: [
+            { title: "页签与筛选", items: ["资料收集分为我发布的、我收到的两个页签，默认进入我发布的。", "名称支持模糊查询；状态支持全部、未开始、进行中、已结束；发布时间支持起止区间筛选。", "点击查询按当前条件刷新列表，点击重置清空条件并恢复全量数据。"] },
+            { title: "列表字段", items: ["列表展示名称、发布对象、发送人数、提交人数、发布时间、状态、操作。", "发布时间按 YYYY-MM-DD HH:mm:ss 展示，精确到秒。", "发送人数表示应提交人数，提交人数表示至少提交过一个文件的人员数。"] },
+            { title: "操作规则", items: ["我发布的操作项不展示上传资料。", "未开始：查看详情、编辑、删除；进行中：查看详情、结束；已结束：查看详情、删除。", "查看详情进入发布者详情页；详情按文件维度管理提交材料。", "结束前弹出二次确认，提示结束后未提交人员无法继续上传；确认后 PC 与 App 上传入口同步禁用。", "删除统一使用通用二次确认弹窗，文案为“确定要删除么？删除后不可恢复”。"] },
+            { title: "新增收集", items: ["新增收集按钮仅显示在我发布的页签下方。", "必填字段为收集名称、收集对象、开始方式、截止时间、上传要求；定时开始时开始时间必填。", "开始时间、截止时间精确到秒；说明附件非必填，最多 1 个，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。", "收集对象点击后弹出选择器，支持在教职工、家长页签内选择并确认回填。"] }
+          ]
+        };
+      }
+      if (!isCollectDetail && pcCollectViewMode === "received") {
+        return {
+          title: "PC 我收到的资料收集列表页 PRD 规则",
+          sections: [
+            { title: "页签与筛选", items: ["我收到的仅展示当前教师作为收集对象接收的任务。", "名称支持模糊查询；状态支持全部、未上传、已上传、已结束；发布时间支持起止区间筛选。", "发布时间和截止时间均按 YYYY-MM-DD HH:mm:ss 展示，精确到秒。"] },
+            { title: "列表字段", items: ["列表展示收集名称、发布人、发布时间、截止时间、状态和操作。", "状态根据当前教师是否已提交及任务是否结束计算。"] },
+            { title: "操作规则", items: ["未上传支持查看详情、上传资料；已上传支持查看详情、上传资料以追加文件；已结束仅支持查看自己的资料。", "上传资料弹窗只展示文件选择区，不展示提交人员、收集任务字段。", "最多上传 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个文件不超过 15M；校验失败给出文字提示。", "我收到的页签不展示新增收集按钮。"] }
+          ]
+        };
+      }
+      if (isCollectDetail) {
+        return {
+          title: "PC 资料收集详情页 PRD 规则",
+          sections: [
+            {
+              title: "页面与入口",
+              items: [
+                "从资料收集列表点击「查看详情」进入本页，用于查看单个收集任务的基本信息、提交人员、提交状态和上传文件。",
+                "点击「返回列表」返回资料收集列表页，保留当前任务数据和已提交记录。",
+                "详情页不展示「新增收集」按钮，不允许在详情页新建任务。",
+                "详情页顶部仅保留返回入口、基本信息区、提交人员筛选区和资料收集列表。"
+              ]
+            },
+            {
+              title: "顶部信息字段",
+              items: [
+                "「收集名称」展示任务标题，来源于发布收集时填写的收集名称。",
+                "「发布对象」展示任务接收范围，可为家长范围或教职工范围。",
+                "「收集状态」展示未开始、进行中、已结束。",
+                "「发布时间」展示任务创建或发布时间。",
+                "「截止时间」展示最后提交时间。",
+                "「发送人数」展示应提交总人数；「提交人数」展示已提交人数；「未提交人数」= 发送人数 - 提交人数。",
+                "统计字段只读展示，不在详情页内编辑。"
+              ]
+            },
+            {
+              title: "筛选与列表字段",
+              items: [
+                "「提交人员」输入框按提交人员名称模糊查询，输入后实时刷新列表。",
+                "「状态」下拉包含全部、已提交、未提交，选择后立即刷新列表。",
+                "列表字段为提交人员、状态、提交资料、提交时间、操作。",
+                "「提交人员」统一展示提交主体，不展示家长名称字段。",
+                "「提交资料」已提交时展示首个文件名，多文件展示“等 N 个文件”；未提交显示“-”。",
+                "「提交时间」展示最新一次提交成功时间；未提交显示“-”。",
+                "筛选结果为空时保留表头并展示空状态，不改变任务统计。"
+              ]
+            },
+            {
+              title: "点击与文件操作",
+              items: [
+                "已提交行展示「查看」；点击后打开上传文件弹窗。",
+                "上传文件弹窗展示该提交人员的全部文件，每个文件展示名称和格式。",
+                "文件支持「查看」「下载」「另存为」；查看用于预览，下载保存本地，另存为保存到资源文件夹。",
+                "点击「另存为」打开保存弹窗，老师可选择保存到「我的资源」或「学校资源」。",
+                "另存为弹窗包含保存位置、目标文件夹、保存文件三个字段；保存位置切换后，目标文件夹选项同步切换到对应资源目录。",
+                "点击「确认保存」后保存到所选资源目录，并保留来源任务和提交人员记录。",
+                "未提交行不展示查看操作。"
+              ]
+            }
+          ]
+        };
+      }
+
+      return {
+        title: "PC 资料收集列表页 PRD 规则",
+        sections: [
+          {
+            title: "页面与筛选",
+            items: [
+              "当前页仅展示资料收集列表。",
+              "「名称」按收集名称模糊查询。",
+              "「状态」包含全部、未开始、进行中、已结束。",
+              "「发布时间」为开始日期到结束日期的区间筛选。",
+              "点击「查询」按当前条件刷新列表；点击「重置」清空筛选条件并恢复全部列表。"
+            ]
+          },
+          {
+            title: "列表字段",
+            items: [
+              "「名称」展示收集任务名称。",
+              "「发布对象」展示收集对象。",
+              "「发送人数」展示应提交人数。",
+              "「提交人数」展示已提交人数。",
+              "「发布时间」展示任务发布时间。",
+              "「状态」展示未开始、进行中、已结束。",
+              "「操作」展示当前状态可执行动作。"
+            ]
+          },
+          {
+            title: "按钮与状态规则",
+            items: [
+              "点击「新增收集」打开发布收集弹窗。",
+              "点击「查看详情」进入资料收集详情页。",
+              "我发布的操作项不展示上传资料；上传资料仅适用于我收到的任务。",
+              "我收到的任务在未上传、已上传状态展示上传资料入口；已结束状态不展示上传资料入口。",
+              "我发布的未开始状态支持查看详情、编辑、删除。",
+              "我发布的进行中状态支持查看详情、结束；点击结束时必须弹出二次确认弹窗。",
+              "结束确认弹窗标题为「结束收集」，提示「结束后，未提交人员将无法继续提交资料，已提交资料仍可查看、下载和另存」。",
+              "点击确认结束后，任务状态变为已结束，同时 PC 与 App 端上传入口同步置灰；点击取消或关闭弹窗时不改变任务状态。",
+              "已结束状态仅支持查看详情、删除，不允许继续上传资料。",
+              "点击任意删除操作时，统一打开通用删除确认弹窗；点击确认删除后执行删除，点击取消或关闭不删除。"
+            ]
+          },
+          {
+            title: "新增/上传校验",
+            items: [
+              "新增收集必填：收集名称、收集对象、开始方式、截止时间、上传要求。",
+              "收集对象字段点击后打开选择弹窗，支持在教职工、家长两个页签中选择对象；确认后回填到收集对象字段。",
+              "开始方式为定时开始时，开始时间必填且精确到秒。",
+              "说明附件最多 1 个，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。",
+              "上传资料弹窗只展示上传资料区域，不展示提交人员和收集任务字段。",
+              "上传资料弹窗未选择文件时不能确认上传。",
+              "上传资料最多 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。",
+              "重复文件、格式不支持、超大小、超数量时给出文字提示。"
+            ]
+          }
+        ]
+      };
+    }
+
+    function getDetailedAppRules() {
+      const isCreate = document.getElementById("appCollectCreateScreen")?.classList.contains("active");
+      const isDetail = document.getElementById("resourceDetailScreen")?.classList.contains("active");
+      const isWorkbench = document.getElementById("workbenchScreen")?.classList.contains("active");
+      const isParticipant = document.getElementById("appParticipantScreen")?.classList.contains("active");
+      const isTeacher = activeAppRole === "teacher";
+
+      if (!isCreate && !isDetail && !isWorkbench && isTeacher && activeTeacherResourceTab === "资料收集") {
+        if (activeTeacherCollectView === "published") {
+          return {
+            title: "App 教师端我发布的资料收集列表页 PRD 规则",
+            sections: [
+              { title: "页签与状态", items: ["资料收集内展示我发布的、我收到的紧凑页签；我的资源和学校资源不展示该页签。", "状态使用下拉选择，包含全部、未开始、进行中、已结束，避免占用列表可视区域。"] },
+              { title: "列表字段", items: ["卡片展示收集名称、发布对象、发布时间、截止时间、发送人数、提交人数和状态。", "发布时间、截止时间统一按 YYYY-MM-DD HH:mm:ss 展示，精确到秒。", "发送人数、提交人数使用突出颜色并可点击，分别进入发送人数、提交人数页面；人员页仅展示姓名、班级或部门。"] },
+              { title: "操作", items: ["我发布的卡片仅保留查看详情按钮，不展示上传资料。", "点击查看详情进入文件维度的提交资料列表，支持单选、全选、分页及批量另存为。", "右侧悬浮“+”仅在我发布的显示，点击进入发布收集页面。"] },
+              { title: "状态边界", items: ["未开始任务支持查看详情；进行中任务支持查看详情；已结束任务仍支持查看详情和已提交文件的查看、下载、另存为。", "发布者结束任务时需二次确认；确认后接收方上传入口置灰。"] }
+            ]
+          };
+        }
+        return {
+          title: "App 教师端我收到的资料收集列表页 PRD 规则",
+          sections: [
+            { title: "页签与状态", items: ["我收到的展示当前教师作为收集对象的任务。", "状态使用下拉选择，包含全部、未上传、已上传、已结束。"] },
+            { title: "列表字段", items: ["卡片展示收集名称、发布人、发布时间、截止时间、上传要求和状态。", "发布时间、截止时间统一按 YYYY-MM-DD HH:mm:ss 展示，精确到秒。"] },
+            { title: "操作", items: ["未上传显示查看详情、上传资料；已上传显示查看详情、继续上传。", "已结束显示已结束标识，仅支持查看自己的资料，上传按钮置灰不可点击。", "上传直接调起手机文件选择，最多 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个文件不超过 15M；异常以文字提示。"] },
+            { title: "限制", items: ["我收到的页签不展示新增收集悬浮按钮。", "上传成功后更新为已上传，并记录最新提交时间。"] }
+          ]
+        };
+      }
+
+      if (!isCreate && !isDetail && !isWorkbench && !isTeacher) {
+        return {
+          title: "App 家长端资料收集列表页 PRD 规则",
+          sections: [
+            { title: "页面范围", items: ["家长端仅展示资料收集，不展示我发布的、我收到的页签。", "状态筛选包含全部、待上传、已上传；已结束任务在卡片上展示已结束标识。"] },
+            { title: "列表字段", items: ["卡片展示收集名称、发布时间、截止时间、上传要求和状态。", "发布时间、截止时间统一按 YYYY-MM-DD HH:mm:ss 展示，精确到秒。"] },
+            { title: "操作", items: ["待上传支持查看详情、去上传；已上传支持查看详情、继续上传。", "已结束任务仅支持查看详情，去上传或继续上传按钮置灰不可点击。", "上传直接调起手机文件选择，最多 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个文件不超过 15M。"] }
+          ]
+        };
+      }
+
+      if (isWorkbench) {
+        return {
+          title: "App 工作台 PRD 规则",
+          sections: [
+            { title: "页面目标", items: ["工作台用于承载校园应用入口。", "点击校园信息中的资源管理，进入资源管理应用。"] },
+            { title: "字段与点击", items: ["顶部展示当前工作台分类。", "资源管理入口仅负责跳转，不在工作台内展示资料收集列表。", "右上绿色小点仅展示本工作台页面规则。"] },
+            { title: "异常与验收", items: ["入口点击后资源管理页正常打开；返回后恢复工作台页面。"] }
+          ]
+        };
+      }
+
+      if (isParticipant) {
+        const isSubmitted = document.getElementById("appParticipantTitle")?.textContent === "提交人数";
+        return {
+          title: `App 教师端${isSubmitted ? "提交人数" : "发送人数"}页 PRD 规则`,
+          sections: [
+            { title: "页面目标", items: ["本页用于查看当前资料收集任务的人员名单。"] },
+            { title: "字段", items: ["页面标题为发送人数或提交人数。", "列表仅展示姓名、班级/部门，不展示联系方式、文件信息或操作按钮。"] },
+            { title: "交互与边界", items: ["发送人数入口展示任务接收范围内人员。", "提交人数入口仅展示至少提交过一个文件的人员。", "点击返回回到当前资料收集详情，保留文件勾选状态。"] }
+          ]
+        };
+      }
+
+      if (isDetail && isTeacher && activeTeacherCollectView === "published") {
+        return {
+          title: "App 教师端我发布的资料收集详情 PRD 规则",
+          sections: [
+            { title: "基本信息字段", items: ["展示收集名称、发布对象、发布时间、截止时间、发送人数、提交人数、上传要求和说明附件。", "发布时间与截止时间统一按 YYYY-MM-DD HH:mm:ss 展示。", "发送人数、提交人数使用绿色可点击数字。"] },
+            { title: "人员名单交互", items: ["点击发送人数进入发送人数页，展示姓名、班级/部门。", "点击提交人数进入提交人数页，展示姓名、班级/部门。"] },
+            { title: "文件列表与另存为", items: ["资料收集列表以文件为维度展示文件名称、文件大小、提交人员、提交时间和操作。", "每个文件支持预览、下载；预览打开文件预览，下载保存至本地。", "支持单选、全选；未选文件时另存为按钮禁用，选中后可用。", "点击另存为可选择保存到我的资源或学校资源的具体文件夹。", "同一目标文件夹出现同名文件时跳过导入并提示已存在文件。"] },
+            { title: "限制", items: ["我发布的详情不提供上传资料操作。", "说明附件仅支持查看和下载。"] }
+          ]
+        };
+      }
+
+      if (isDetail && isTeacher && activeTeacherCollectView === "received") {
+        return {
+          title: "App 教师端我收到的资料收集详情 PRD 规则",
+          sections: [
+            { title: "字段", items: ["展示收集名称、发布人、状态、发布时间、截止时间、上传要求及我的资料。", "发布时间与截止时间统一按 YYYY-MM-DD HH:mm:ss 展示。"] },
+            { title: "交互", items: ["未上传显示上传资料，已上传显示继续上传。", "我的资料中的文件支持查看、下载、另存为。"] },
+            { title: "状态边界", items: ["已结束任务显示已结束标识，上传按钮置灰且不可点击，仅可查看已上传资料。", "单次及累计最多上传5个文件；支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过15M。"] }
+          ]
+        };
+      }
+
+      if (isCreate) {
+        return {
+          title: "App 发布收集页 PRD 规则",
+          sections: [
+            {
+              title: "字段",
+              items: [
+                "收集名称必填，用于生成任务标题。",
+                "收集对象必填，选择后回填教职工或家长范围。",
+                "开始方式必填，支持立即开始、定时开始。",
+                "开始时间仅定时开始时展示并必填，精确到秒。",
+                "截止时间必填。",
+                "上传要求必填，用于说明提交材料要求。",
+                "说明附件非必填，最多 1 个。",
+                "必填标识「*」展示在字段名称前方。"
+              ]
+            },
+            {
+              title: "点击与校验",
+              items: [
+                "点击左上角返回，回到资料收集列表，不保存未发布内容。",
+                "点击收集对象字段打开选择弹窗，支持教职工、家长两类对象选择，确认后回填。",
+                "点击说明附件上传区域调起手机文件选择。",
+                "点击确认发布时校验必填字段；缺失时给出文字提示并阻止发布。",
+                "附件支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。",
+                "发布成功后返回教师端资料收集列表；立即开始为进行中，定时开始为未开始。",
+                "发布收集页采用移动端表单页面，不使用 PC 居中弹窗。"
+              ]
+            }
+          ]
+        };
+      }
+
+      if (isDetail && document.querySelector("#resourceDetailScreen .file-content-preview")) {
+        return {
+          title: "App 文件查看页 PRD 规则",
+          sections: [
+            {
+              title: "页面与点击",
+              items: [
+                "标题展示文件名称。",
+                "正文直接展示文件内容，不展示格式、大小、操作时间信息卡片。",
+                "点击左上角返回资源列表，保留原页签和文件夹筛选状态。",
+                "文件查看页不提供编辑、删除、下载按钮。",
+                "无法预览时在正文区域展示提示。",
+                "文件内容区域只用于预览正文、图片或表格内容，不承载资源操作。"
+              ]
+            }
+          ]
+        };
+      }
+
+      if (isDetail) {
+        return {
+          title: isTeacher ? "App 教师端资料收集详情页 PRD 规则" : "App 家长端资料收集详情页 PRD 规则",
+          sections: isTeacher ? [
+            {
+              title: "字段与列表",
+              items: [
+                "展示收集名称、发布对象、发布时间、截止时间、发送人数、提交人数、上传要求。",
+                "说明附件支持查看和下载。",
+                "提交列表展示提交人员、状态、提交资料摘要、提交时间。",
+                "已提交记录展示查看按钮，可打开上传信息弹窗。",
+                "提交资料多文件时展示首个文件名加“等 N 个文件”；未提交显示空状态。"
+              ]
+            },
+            {
+              title: "点击与上传",
+              items: [
+                "点击返回回到教师端资料收集列表。",
+                "点击查看打开上传信息底部弹窗。",
+                "上传信息弹窗展示提交人员、提交时间、上传文件列表。",
+                "上传信息弹窗内每个文件支持查看、下载、另存为。",
+                "点击另存为打开移动端保存弹窗，支持选择保存到我的资源或学校资源。",
+                "点击提交资料或继续提交调起手机文件选择。",
+                "当任务状态为已结束时，详情页显示已结束标识，底部按钮置灰为「已结束，无法上传」，点击无响应。",
+                "当前教师上传成功后作为提交人员写入列表，并更新提交人数。",
+                "最多 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。"
+              ]
+            }
+          ] : [
+            {
+              title: "字段与点击",
+              items: [
+                "展示收集名称、发布时间、截止时间、上传要求、说明附件。",
+                "不展示发布对象、发送人数、提交人数。",
+                "待上传显示上传资料按钮；已上传显示继续上传按钮。",
+                "如果任务已结束，详情页右上角显示已结束标识，底部上传按钮置灰为「已结束，无法上传」，家长不可继续上传。",
+                "上传按钮直接调起手机文件选择，不进入单独上传页。",
+                "上传成功后展示我的上传文件和最新提交时间。",
+                "最新提交时间展示用户最近一次提交成功的时间。",
+                "我的上传列表内文件支持查看和下载。",
+                "最多 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。"
+              ]
+            }
+          ]
+        };
+      }
+
+      if (isTeacher && activeTeacherResourceTab !== "资料收集") {
+        return {
+          title: `App 教师端${activeTeacherResourceTab}列表页 PRD 规则`,
+          sections: [
+            {
+              title: "字段与筛选",
+              items: [
+                "顶部页签包含我的资源、学校资源、资料收集。",
+                "文件夹选择框展示当前分类；点击后以底部弹窗展示树状目录。",
+                "列表只展示具体文件，不展示文件夹卡片。",
+                "文件卡片展示格式、文件名、大小、操作时间。",
+                "我的资源、学校资源均支持按文件夹切换显示；移动端不支持批量操作、不展示回收站。"
+              ]
+            },
+            {
+              title: "文件操作",
+              items: [
+                "点击查看进入文件查看页。",
+                "点击下载触发本地下载提示。",
+                "点击编辑打开底部弹窗，文件名最多 20 个字符。",
+                "点击删除打开通用删除确认弹窗，文案提示是否删除当前文件，确认后从列表移除。",
+                "点击悬浮加号上传资源到当前文件夹。",
+                "上传资源按钮仅显示加号图标，不展示「上传」文字。"
+              ]
+            }
+          ]
+        };
+      }
+
+      if (isTeacher) {
+        return {
+          title: "App 教师端资料收集列表页 PRD 规则",
+          sections: [
+            {
+              title: "字段与点击",
+              items: [
+                "教师端和家长端切换按钮位于手机页面外，不展示在资源管理应用内部。",
+                "教师端资源管理顶部页签包含我的资源、学校资源、资料收集。",
+                "状态筛选包含全部、未开始、进行中、已结束。",
+                "卡片展示收集名称、发布对象、发布时间、截止时间、发送人数、提交人数和状态。",
+                "点击查看详情进入资料收集详情页。",
+                "点击上传资料调起手机文件选择，当前教师作为提交人员。",
+                "已结束任务卡片展示已结束标识，上传资料按钮置灰且不可点击。",
+                "点击悬浮加号进入发布收集页面。",
+                "最多上传 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。"
+              ]
+            }
+          ]
+        };
+      }
+
+      return {
+        title: "App 家长端资料收集列表页 PRD 规则",
+        sections: [
+          {
+            title: "字段与点击",
+              items: [
+              "家长端资源管理仅展示资料收集，不展示资料发布模块。",
+              "状态筛选包含全部、待上传、已上传。",
+              "已结束不是筛选项；当任务已结束时，卡片状态优先展示已结束。",
+              "卡片展示收集名称、发布时间、截止时间、上传要求和状态。",
+              "点击查看详情进入资料收集详情页。",
+              "待上传点击去上传调起手机文件选择。",
+              "已上传点击继续上传调起手机文件选择。",
+              "已结束任务卡片展示已结束标识，去上传/继续上传按钮置灰且不可点击。",
+              "上传成功后状态变为已上传，并进入详情页展示我的上传和最新提交时间。",
+              "最多上传 5 个文件，支持 Word、PPT、Excel、PDF、JPG、PNG，单个不超过 15M。"
+            ]
+          }
+        ]
+      };
+    }
+
+    function getCommonPageRuleSections(scope) {
+      return [
+        {
+          title: "规则入口与时间口径",
+          items: [
+            "右上角绿色小点仅展示当前页面的 PRD 规则；点击关闭或“我知道了”仅关闭规则弹窗，不修改页面数据。",
+            "页面涉及的发布时间、开始时间、截止时间、提交时间和操作时间统一按 YYYY-MM-DD HH:mm:ss 展示，精确到秒。"
+          ]
+        },
+        {
+          title: "文件与确认通用规则",
+          items: [
+            "文件预览用于打开当前文件的预览内容；下载用于触发本地下载提示。",
+            "涉及上传时，支持 Word、PPT、Excel、PDF、JPG、PNG，单个文件不超过 15M；超大小、格式不支持、重复文件或超过数量限制时必须给出文字提示。",
+            "删除操作统一使用二次确认弹窗，提示文案为“确定要删除么？删除后不可恢复”；取消、关闭弹窗或点击遮罩均不执行删除。",
+            scope === "pc" ? "PC 端规则弹窗为居中弹窗。" : "App 端规则弹窗为底部弹窗，内容区域支持滚动查看完整规则。"
+          ]
+        }
+      ];
+    }
+
+    function openPrdRules(scope) {
+      const config = scope === "pc" ? getDetailedPcRules() : getDetailedAppRules();
+      config.sections = [...config.sections, ...getCommonPageRuleSections(scope)];
+      if (scope === "pc") {
+        const mask = document.getElementById("modalMask");
+        const modal = mask.querySelector(".modal");
+        document.getElementById("modalTitle").textContent = config.title;
+        document.getElementById("modalBody").innerHTML = renderRules(config.title, config.sections);
+        document.getElementById("confirmModal").textContent = "我知道了";
+        mask.dataset.mode = "rules";
+        modal.classList.add("rules-modal");
+        mask.classList.add("show");
+        return;
+      }
+
+      const mask = document.getElementById("appSheetMask");
+      const title = document.getElementById("appSheetTitle");
+      const body = document.getElementById("appSheetBody");
+      const actions = document.getElementById("appSheetActions");
+      mask.dataset.mode = "rules";
+      title.textContent = config.title;
+      body.innerHTML = renderRules(config.title, config.sections);
+      actions.innerHTML = `<button class="mobile-btn" type="button" id="cancelAppSheet">我知道了</button>`;
+      actions.style.gridTemplateColumns = "1fr";
+      mask.classList.add("show");
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes >= 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)}M`;
+      return `${Math.max(1, Math.round(bytes / 1024))}KB`;
+    }
+
+    function getFileExtension(name) {
+      return name.includes(".") ? name.split(".").pop().toLowerCase() : "";
+    }
+
+    function showPublishUploadError(message) {
+      const error = document.getElementById("publishUploadError");
+      if (!error) return;
+      error.textContent = message;
+      error.classList.toggle("show", Boolean(message));
+    }
+
+    function showAppUploadError(message) {
+      const error = document.getElementById("appUploadError");
+      if (!error) return;
+      error.textContent = message;
+      error.classList.toggle("show", Boolean(message));
+    }
+
+    function renderPublishUploadedFiles() {
+      const list = document.getElementById("publishUploadedList");
+      if (!list) return;
+      list.innerHTML = publishUploadedFiles.map((file, index) => `
+        <div class="uploaded-file">
+          <div class="uploaded-name">${file.name}<span class="uploaded-meta">${formatFileSize(file.size)}</span></div>
+          <button class="delete-file" type="button" data-delete-publish-file="${index}">删除</button>
+        </div>
+      `).join("");
+    }
+
+    function renderCollectAttachmentFiles() {
+      const list = document.getElementById("collectAttachmentList");
+      if (!list) return;
+      list.innerHTML = collectAttachmentFiles.map((file, index) => `
+        <div class="uploaded-file">
+          <div class="uploaded-name">${file.name}<span class="uploaded-meta">${formatFileSize(file.size)}</span></div>
+          <button class="delete-file" type="button" data-delete-collect-attachment="${index}">删除</button>
+        </div>
+      `).join("");
+    }
+
+    function updateSaveAsFolderOptions(scope) {
+      const folder = document.getElementById("saveAsFolder");
+      if (!folder) return;
+      const options = scope === "school"
+        ? ["学校资源 / 根目录", "学校资源 / 教学教研", "学校资源 / 课件", "学校资源 / 课程教学"]
+        : ["我的资源 / 学生材料", "我的资源 / 班级通知", "我的资源 / 教学资料"];
+      folder.innerHTML = options.map(item => `<option>${item}</option>`).join("");
+    }
+
+    function commitBatchSaveAs() {
+      const scope = document.getElementById("saveAsScope")?.value || "my";
+      const folderPath = document.getElementById("saveAsFolder")?.value || "";
+      const folder = folderPath.split(" / ").pop();
+      const destination = scope === "school" ? teacherSchoolResources : teacherMyResources;
+      const saved = [];
+      const duplicates = [];
+
+      pendingBatchSaveFiles.forEach(file => {
+        const exists = destination.some(item => !item.isFolder && item.folder === folder && item.name === file.file);
+        if (exists) {
+          duplicates.push(file.file);
+          return;
+        }
+        destination.push({
+          name: file.file,
+          size: file.size,
+          time: "2026-06-13 18:20",
+          format: getDisplayFileFormat(file.file),
+          folder
+        });
+        saved.push(file.file);
+      });
+
+      pendingBatchSaveFiles = [];
+      selectedCollectFiles = new Set();
+      renderCollectSubmissions();
+      if (duplicates.length) {
+        showToast(`${saved.length ? `已保存 ${saved.length} 个文件；` : ""}${duplicates.join("、")} 已存在，未重复导入`);
+      } else {
+        showToast(`已保存 ${saved.length} 个文件到${scope === "school" ? "学校资源" : "我的资源"}`);
+      }
+      return true;
+    }
+
+    function renderPcCollectUploadFiles() {
+      const list = document.getElementById("pcCollectUploadList");
+      if (!list) return;
+      list.innerHTML = pcCollectUploadFiles.map((file, index) => `
+        <div class="uploaded-file">
+          <div class="uploaded-name">${file.name}<span class="uploaded-meta">${formatFileSize(file.size)}</span></div>
+          <button class="delete-file" type="button" data-delete-pc-collect-upload="${index}">删除</button>
+        </div>
+      `).join("");
+    }
+
+    function addPcCollectUploadFiles(fileList) {
+      const incoming = Array.from(fileList);
+      const errors = [];
+      const existing = collectSubmissions.find(item => (item.submitter || item.student) === "当前教师")?.files || [];
+
+      incoming.forEach(file => {
+        const ext = getFileExtension(file.name);
+        const isDuplicate = pcCollectUploadFiles.some(item => item.name === file.name && item.size === file.size) || existing.includes(file.name);
+        if (!publishAllowedExtensions.includes(ext)) {
+          errors.push(`${file.name} 格式不支持，仅支持 Word、Excel、PPT、PDF、JPG、PNG`);
+        } else if (file.size > publishMaxFileSize) {
+          errors.push(`${file.name} 超过 15M`);
+        } else if (isDuplicate) {
+          errors.push(`${file.name} 已选择`);
+        } else if (existing.length + pcCollectUploadFiles.length >= publishMaxFileCount) {
+          errors.push(`最多只能上传 ${publishMaxFileCount} 个文件，超出的文件未添加`);
+        } else {
+          pcCollectUploadFiles.push(file);
+        }
+      });
+
+      renderPcCollectUploadFiles();
+      showPublishUploadError(errors.length ? errors[0] : "");
+      showToast(errors.length ? "部分文件未添加" : "文件已选择");
+    }
+
+    function renderAppUploadFiles() {
+      const list = document.getElementById("appUploadList");
+      if (!list) return;
+      const task = appTasks.find(item => item.id === appUploadTaskId);
+      const existingFiles = task?.uploadFiles || [];
+      const existingHtml = existingFiles.map(file => `
+        <div class="mobile-file">
+          <span>${file}</span>
+          <div class="mobile-file-actions"><span class="uploaded-meta">已上传</span></div>
+        </div>
+      `).join("");
+      const selectedHtml = appUploadFiles.map((file, index) => `
+        <div class="mobile-file">
+          <span>${file.name}</span>
+          <div class="mobile-file-actions">
+            <span class="uploaded-meta">${formatFileSize(file.size)}</span>
+            <button class="delete-file" type="button" data-delete-app-upload="${index}">删除</button>
+          </div>
+        </div>
+      `).join("");
+      list.innerHTML = `${existingHtml}${selectedHtml}`;
+    }
+
+    function addPublishFiles(fileList) {
+      const incoming = Array.from(fileList);
+      const errors = [];
+
+      incoming.forEach(file => {
+        const ext = getFileExtension(file.name);
+        const isDuplicate = publishUploadedFiles.some(item => item.name === file.name && item.size === file.size);
+        if (!publishAllowedExtensions.includes(ext)) {
+          errors.push(`${file.name} 格式不支持`);
+        } else if (file.size > publishMaxFileSize) {
+          errors.push(`${file.name} 超过 15M`);
+        } else if (isDuplicate) {
+          errors.push(`${file.name} 已上传`);
+        } else if (publishUploadedFiles.length >= publishMaxFileCount) {
+          errors.push(`最多只能上传 ${publishMaxFileCount} 个文件，超出的文件未添加`);
+        } else {
+          publishUploadedFiles.push(file);
+        }
+      });
+
+      renderPublishUploadedFiles();
+      showPublishUploadError(errors.length ? errors[0] : "");
+      showToast(errors.length ? "部分文件未上传" : "文件已上传");
+    }
+
+    function addCollectAttachment(fileList) {
+      const file = Array.from(fileList)[0];
+      if (!file) return;
+      const ext = getFileExtension(file.name);
+      if (!publishAllowedExtensions.includes(ext)) {
+        showPublishUploadError(`${file.name} 格式不支持`);
+        showToast("附件未上传");
+      } else if (file.size > publishMaxFileSize) {
+        showPublishUploadError(`${file.name} 超过 15M`);
+        showToast("附件未上传");
+      } else {
+        collectAttachmentFiles = [file];
+        renderCollectAttachmentFiles();
+        showPublishUploadError("");
+        showToast("说明附件已上传");
+      }
+    }
+
+    function getCollectTargetText() {
+      return selectedCollectTargets.length ? selectedCollectTargets.join("、") : "";
+    }
+
+    function updateCollectTargetInput() {
+      const input = document.getElementById("collectTargetInput");
+      if (input) input.value = getCollectTargetText();
+    }
+
+    function openTargetPicker() {
+      targetPickerTab = "staff";
+      targetPickerDraft = [...selectedCollectTargets];
+      renderTargetPicker();
+      document.getElementById("targetSelectMask").classList.add("show");
+    }
+
+    function closeTargetPicker() {
+      document.getElementById("targetSelectMask").classList.remove("show");
+    }
+
+    function renderTargetPicker() {
+      document.querySelectorAll("[data-target-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.targetTab === targetPickerTab);
+      });
+
+      const crumb = document.getElementById("targetCrumb");
+      const list = document.getElementById("targetList");
+      const selectedList = document.getElementById("targetSelectedList");
+      if (!crumb || !list || !selectedList) return;
+
+      const options = collectTargetOptions[targetPickerTab];
+      const isStaff = targetPickerTab === "staff";
+      const allChecked = options.every(item => targetPickerDraft.includes(item));
+      crumb.innerHTML = `${isStaff ? "教职工" : "家长"} <span>›</span> 一德教育科技集团`;
+      list.innerHTML = `
+        <button class="target-row all" type="button" data-target-all>
+          <span class="target-checkbox ${allChecked ? "checked" : ""}"></span>
+          <span>全选</span>
+        </button>
+        ${options.map((item, index) => `
+          <button class="target-row" type="button" data-target-item="${item}">
+            <span class="target-checkbox ${targetPickerDraft.includes(item) ? "checked" : ""}"></span>
+            <span class="target-icon">${isStaff ? "组" : "家"}</span>
+            <span>${item}</span>
+            ${isStaff && index >= 2 && index <= 5 ? `<span class="target-sub">下级</span>` : ""}
+          </button>
+        `).join("")}
+      `;
+
+      selectedList.innerHTML = targetPickerDraft.length
+        ? targetPickerDraft.map(item => `
+          <span class="target-chip">${item}<button type="button" data-remove-target="${item}">×</button></span>
+        `).join("")
+        : `<span class="target-empty">请选择教职工或家长</span>`;
+    }
+
+    function toggleTargetItem(item) {
+      if (targetPickerDraft.includes(item)) {
+        targetPickerDraft = targetPickerDraft.filter(selected => selected !== item);
+      } else {
+        targetPickerDraft.push(item);
+      }
+      renderTargetPicker();
+    }
+
+    function toggleTargetAll() {
+      const options = collectTargetOptions[targetPickerTab];
+      const allChecked = options.every(item => targetPickerDraft.includes(item));
+      targetPickerDraft = allChecked
+        ? targetPickerDraft.filter(item => !options.includes(item))
+        : [...new Set([...targetPickerDraft, ...options])];
+      renderTargetPicker();
+    }
+
+    function addAppUploadFiles(fileList) {
+      const incoming = Array.from(fileList);
+      const errors = [];
+      const isTeacherUpload = appUploadTaskId.startsWith("teacher:");
+      const isTeacherReceivedUpload = appUploadTaskId.startsWith("teacher-received:");
+      const task = isTeacherReceivedUpload
+        ? receivedCollects.find(item => item.id === appUploadTaskId.replace("teacher-received:", ""))
+        : isTeacherUpload
+          ? resources.find(item => String(item.id) === appUploadTaskId.replace("teacher:", ""))
+        : appTasks.find(item => item.id === appUploadTaskId);
+      const existingFiles = isTeacherReceivedUpload
+        ? (task?.files || [])
+        : isTeacherUpload
+          ? (task?.teacherUploadFiles || [])
+          : (task?.uploadFiles || []);
+
+      incoming.forEach(file => {
+        const ext = getFileExtension(file.name);
+        const isDuplicate = appUploadFiles.some(item => item.name === file.name && item.size === file.size) || existingFiles.includes(file.name);
+        if (!publishAllowedExtensions.includes(ext)) {
+          errors.push(`${file.name} 格式不支持，仅支持 Word、Excel、PPT、PDF、JPG、PNG`);
+        } else if (file.size > publishMaxFileSize) {
+          errors.push(`${file.name} 超过 15M`);
+        } else if (isDuplicate) {
+          errors.push(`${file.name} 已选择`);
+        } else if (existingFiles.length + appUploadFiles.length >= publishMaxFileCount) {
+          errors.push(`最多只能上传 ${publishMaxFileCount} 个文件，超出的文件未添加`);
+        } else {
+          appUploadFiles.push(file);
+        }
+      });
+
+      renderAppUploadFiles();
+      showAppUploadError(errors.length ? errors[0] : "");
+      showToast(errors.length ? "部分文件未添加" : "文件已选择");
+    }
+
+    function showAppCollectFormError(message) {
+      const error = document.getElementById("appCollectFormError");
+      if (!error) return;
+      error.textContent = message;
+      error.classList.toggle("show", Boolean(message));
+    }
+
+    function renderAppCollectAttachment() {
+      const list = document.getElementById("appCollectAttachmentList");
+      if (!list) return;
+      list.innerHTML = appCollectAttachmentFiles.map((file, index) => `
+        <div class="mobile-file">
+          <span>${file.name}<span class="uploaded-meta"> ${formatFileSize(file.size)}</span></span>
+          <div class="mobile-file-actions"><button class="link danger" type="button" data-delete-app-collect-attachment="${index}">删除</button></div>
+        </div>
+      `).join("");
+    }
+
+    function addAppCollectAttachment(fileList) {
+      const file = Array.from(fileList)[0];
+      if (!file) return;
+      const ext = getFileExtension(file.name);
+      if (!publishAllowedExtensions.includes(ext)) {
+        showAppCollectFormError(`${file.name} 格式不支持`);
+        showToast("附件未上传");
+      } else if (file.size > publishMaxFileSize) {
+        showAppCollectFormError(`${file.name} 超过 15M`);
+        showToast("附件未上传");
+      } else {
+        appCollectAttachmentFiles = [file];
+        renderAppCollectAttachment();
+        showAppCollectFormError("");
+        showToast("说明附件已上传");
+      }
+    }
+
+    function renderRows() {
+      const name = document.getElementById("nameFilter").value.trim();
+      const status = document.getElementById("statusFilter").value;
+      const startDate = document.getElementById("startDateFilter").value;
+      const endDate = document.getElementById("endDateFilter").value;
+
+      document.querySelectorAll("[data-pc-collect-view]").forEach(button => {
+        button.classList.toggle("active", button.dataset.pcCollectView === pcCollectViewMode);
+      });
+
+      if (pcCollectViewMode === "received") {
+        const filteredReceived = receivedCollects.filter(item => {
+          const matchesName = !name || item.name.includes(name);
+          const matchesStatus = !status || item.status === status;
+          const publishDay = item.publishDate.slice(0, 10);
+          const matchesStart = !startDate || publishDay >= startDate;
+          const matchesEnd = !endDate || publishDay <= endDate;
+          return matchesName && matchesStatus && matchesStart && matchesEnd;
+        });
+        tableHead.innerHTML = `
+          <tr>
+            <th style="width: 28%;">名称</th>
+            <th style="width: 16%;">发布人</th>
+            <th style="width: 16%;">发布时间</th>
+            <th style="width: 16%;">截止时间</th>
+            <th style="width: 12%;">状态</th>
+            <th style="width: 12%;">操作</th>
+          </tr>
+        `;
+        rows.innerHTML = filteredReceived.map(item => {
+          const canUpload = item.status === "未上传" || item.status === "已上传";
+          const ops = item.status === "已结束"
+            ? `<button class="link" type="button" data-received-detail="${item.id}">查看我的资料</button>`
+            : `<button class="link" type="button" data-received-detail="${item.id}">查看详情</button><button class="link" type="button" data-pc-received-upload="${item.id}">上传资料</button>`;
+          return `
+            <tr>
+              <td><div class="name-cell"><span>📥</span><span>${item.name}</span></div></td>
+              <td>${item.publisher}</td>
+              <td>${formatDateTime(item.publishDate)}</td>
+              <td>${formatDateTime(item.deadline)}</td>
+              <td><span class="status-badge ${item.status === "未上传" ? "done" : item.status === "已上传" ? "open" : "late"}">${item.status}</span></td>
+              <td><div class="ops">${ops}</div></td>
+            </tr>
+          `;
+        }).join("");
+        return;
+      }
+
+      const filtered = resources.filter(item => {
+        const compareDate = item.publishDate;
+        const matchesName = !name || item.name.includes(name);
+        const matchesType = item.type === activeResourceType;
+        const matchesStatus = !status || item.status === status;
+        const matchesStart = !startDate || compareDate >= startDate;
+        const matchesEnd = !endDate || compareDate <= endDate;
+        return matchesName && matchesType && matchesStatus && matchesStart && matchesEnd;
+      });
+
+      tableHead.innerHTML = activeResourceType === "发布" ? `
+        <tr>
+          <th style="width: 28%;">名称</th>
+          <th style="width: 16%;">发布对象</th>
+          <th style="width: 12%;">发送人数</th>
+          <th style="width: 12%;">查看人数</th>
+          <th style="width: 12%;">发布时间</th>
+          <th style="width: 12%;">状态</th>
+          <th style="width: 16%;">操作</th>
+        </tr>
+      ` : `
+        <tr>
+          <th style="width: 28%;">名称</th>
+          <th style="width: 16%;">发布对象</th>
+          <th style="width: 12%;">发送人数</th>
+          <th style="width: 12%;">提交人数</th>
+          <th style="width: 12%;">发布时间</th>
+          <th style="width: 12%;">状态</th>
+          <th style="width: 16%;">操作</th>
+        </tr>
+      `;
+
+      rows.innerHTML = filtered.map(item => {
+        const isCollect = item.type === "收集";
+        const publishOps = item.status === "未发布"
+          ? `<button class="link" type="button" data-detail="${item.id}">查看详情</button><button class="link muted" type="button" data-revoke-publish="${item.id}">撤回</button><button class="link danger" type="button" data-delete-publish="${item.id}">删除</button>`
+          : item.status === "已撤回"
+            ? `<button class="link" type="button" data-detail="${item.id}">查看详情</button><button class="link danger" type="button" data-delete-publish="${item.id}">删除</button>`
+            : `<button class="link" type="button" data-detail="${item.id}">查看详情</button><button class="link muted" type="button">编辑</button>`;
+        const collectOps = item.status === "未开始"
+          ? `<button class="link" type="button" data-detail="${item.id}">查看详情</button><button class="link muted" type="button">编辑</button><button class="link danger" type="button" data-delete-collect="${item.id}">删除</button>`
+          : item.status === "进行中"
+            ? `<button class="link" type="button" data-detail="${item.id}">查看详情</button><button class="link danger" type="button" data-end-collect="${item.id}">结束</button>`
+            : `<button class="link" type="button" data-detail="${item.id}">查看详情</button><button class="link danger" type="button" data-delete-collect="${item.id}">删除</button>`;
+        return activeResourceType === "发布" ? `
+          <tr>
+            <td><div class="name-cell"><span>📄</span><span>${item.name}</span></div></td>
+            <td>${item.target}</td>
+            <td>${item.sendCount || 0}</td>
+            <td>${item.readCount || 0}</td>
+            <td>${formatDateTime(item.publishDate)}</td>
+            <td><span class="status-badge ${item.status === "未发布" ? "late" : "done"}">${item.status}</span></td>
+            <td><div class="ops">${publishOps}</div></td>
+          </tr>
+        ` : `
+          <tr>
+            <td><div class="name-cell"><span>${isCollect ? "📥" : "📄"}</span><span>${item.name}</span></div></td>
+            <td>${item.target}</td>
+            <td>${item.sendCount || item.should || 0}</td>
+            <td>${item.submitted || 0}</td>
+            <td>${formatDateTime(item.publishDate)}</td>
+            <td><span class="status-badge ${item.status === "进行中" ? "open" : item.status === "未开始" ? "done" : "late"}">${item.status}</span></td>
+            <td><div class="ops">${collectOps}</div></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function updatePcPageAction() {
+      const action = document.getElementById("pagePrimaryAction");
+      const statusFilter = document.getElementById("statusFilter");
+      if (activeResourceType === "收集") {
+        const isReceived = pcCollectViewMode === "received";
+        action.classList.toggle("hide", isReceived);
+        action.textContent = "新增收集";
+        action.dataset.openModal = "collect";
+        statusFilter.innerHTML = isReceived ? `
+          <option value="">全部</option>
+          <option value="未上传">未上传</option>
+          <option value="已上传">已上传</option>
+          <option value="已结束">已结束</option>
+        ` : `
+          <option value="">全部</option>
+          <option value="未开始">未开始</option>
+          <option value="进行中">进行中</option>
+          <option value="已结束">已结束</option>
+        `;
+      } else {
+        action.classList.remove("hide");
+        action.textContent = "新增发布";
+        action.dataset.openModal = "publish";
+        statusFilter.innerHTML = `
+          <option value="">全部</option>
+          <option value="已发布">已发布</option>
+          <option value="未发布">未发布</option>
+          <option value="已撤回">已撤回</option>
+        `;
+      }
+    }
+
+    function renderPublishReaders() {
+      const filter = document.getElementById("readStatusFilter")?.value || "";
+      const readerRows = document.getElementById("readerRows");
+      if (!readerRows) return;
+      const list = publishReaders.filter(item => !filter || item.status === filter);
+      readerRows.innerHTML = list.map(item => `
+        <tr>
+          <td>${item.student}</td>
+          <td>${item.parent}</td>
+          <td><span class="status-badge ${item.status === "已读" ? "open" : "done"}">${item.status}</span></td>
+          <td>${item.readTime}</td>
+        </tr>
+      `).join("");
+    }
+
+    function getDisplayFileFormat(fileName) {
+      const ext = getFileExtension(fileName);
+      if (["doc", "docx"].includes(ext)) return "Word";
+      if (["ppt", "pptx"].includes(ext)) return "PPT";
+      if (["xls", "xlsx"].includes(ext)) return "Excel";
+      if (ext === "pdf") return "PDF";
+      if (["png", "jpg", "jpeg"].includes(ext)) return ext.toUpperCase();
+      return ext ? ext.toUpperCase() : "文件";
+    }
+
+    function renderDetailFiles(files) {
+      return `
+        <div class="detail-file-list">
+          ${files.map(file => `
+            <div class="detail-file-item">
+              <div class="detail-file-name">${file}<span class="detail-file-format">${getDisplayFileFormat(file)}</span></div>
+              <div class="detail-file-actions">
+                <button class="link" type="button" data-view-file>查看</button>
+                <button class="link muted" type="button" data-download>下载</button>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function openPublishDetail(item) {
+      document.getElementById("pcListPage").classList.add("hide");
+      document.querySelector(".page-head")?.classList.add("hide");
+      document.getElementById("publishDetailPage").classList.add("show");
+      document.getElementById("publishDetailInfo").innerHTML = `
+        <div><b>资料名称</b>${item.name}</div>
+        <div><b>发布对象</b>${item.target}</div>
+        <div><b>发布状态</b>${item.status}</div>
+        <div><b>发布时间</b>${formatDateTime(item.publishTime || "-")}</div>
+        <div><b>发送人数</b>${item.sendCount || 0}</div>
+        <div><b>查看人数</b>${item.readCount || 0}</div>
+        <div class="file-info"><b>文件信息</b>${renderDetailFiles(item.files || ["暑期安全告知书.pdf"])}</div>
+      `;
+      document.getElementById("readStatusFilter").value = "";
+      renderPublishReaders();
+    }
+
+    function backToPcList() {
+      document.getElementById("publishDetailPage").classList.remove("show");
+      document.getElementById("collectDetailPage").classList.remove("show");
+      document.getElementById("pcListPage").classList.remove("hide");
+      document.querySelector(".page-head")?.classList.remove("hide");
+    }
+
+    function getCollectFileRows() {
+      const keyword = document.getElementById("collectStudentFilter")?.value.trim() || "";
+      return collectSubmissions.flatMap(item => {
+        const submitterName = item.submitter || item.student;
+        const matchesName = !keyword || submitterName.includes(keyword);
+        if (item.status !== "已提交" || !matchesName) return [];
+        return item.files.map(file => ({
+          id: `${submitterName}::${file}`,
+          file,
+          size: collectFileSizeMap[file] || "1.2M",
+          submitterName,
+          submitTime: item.submitTime
+        }));
+      });
+    }
+
+    function updateBatchSaveButton() {
+      const button = document.getElementById("batchSaveAsBtn");
+      if (!button) return;
+      const enabled = activeCollectDetailMode === "published" && selectedCollectFiles.size > 0;
+      button.disabled = !enabled;
+      button.classList.toggle("primary", enabled);
+      button.textContent = "另存为";
+    }
+
+    function renderCollectPagination(fileRows) {
+      const pagination = document.getElementById("collectDetailPagination");
+      if (!pagination) return;
+      const totalPages = Math.max(1, Math.ceil(fileRows.length / collectDetailPageSize));
+      collectDetailPage = Math.min(collectDetailPage, totalPages);
+      pagination.innerHTML = `
+        <span>共 ${fileRows.length} 条</span>
+        <button type="button" data-collect-page="prev" ${collectDetailPage === 1 ? "disabled" : ""}>上一页</button>
+        ${Array.from({ length: totalPages }, (_, index) => `<button class="${collectDetailPage === index + 1 ? "active" : ""}" type="button" data-collect-page="${index + 1}">${index + 1}</button>`).join("")}
+        <button type="button" data-collect-page="next" ${collectDetailPage === totalPages ? "disabled" : ""}>下一页</button>
+      `;
+    }
+
+    function renderCollectSubmissions() {
+      const rows = document.getElementById("collectSubmissionRows");
+      if (!rows) return;
+      const fileRows = getCollectFileRows();
+      const totalPages = Math.max(1, Math.ceil(fileRows.length / collectDetailPageSize));
+      collectDetailPage = Math.min(collectDetailPage, totalPages);
+      const start = (collectDetailPage - 1) * collectDetailPageSize;
+      const pageRows = fileRows.slice(start, start + collectDetailPageSize);
+      const allSelected = fileRows.length > 0 && fileRows.every(item => selectedCollectFiles.has(item.id));
+      const tableHead = document.getElementById("collectDetailTableHead");
+      if (tableHead) {
+        tableHead.innerHTML = `
+          <tr>
+            <th style="width: 5%;"><input id="selectAllCollectFiles" type="checkbox" ${allSelected ? "checked" : ""}></th>
+            <th style="width: 29%;">文件名称</th>
+            <th style="width: 13%;">文件大小</th>
+            <th style="width: 20%;">提交人员</th>
+            <th style="width: 23%;">提交时间</th>
+            <th style="width: 10%;">操作</th>
+          </tr>
+        `;
+      }
+      rows.innerHTML = pageRows.length ? pageRows.map(item => `
+        <tr>
+          <td><input type="checkbox" data-select-collect-file="${item.id}" ${selectedCollectFiles.has(item.id) ? "checked" : ""}></td>
+          <td>${item.file}</td>
+          <td>${item.size}</td>
+          <td>${item.submitterName}</td>
+          <td>${item.submitTime}</td>
+          <td><div class="collect-file-actions"><button class="link" type="button" data-view-file>预览</button><button class="link muted" type="button" data-download>下载</button></div></td>
+        </tr>
+      `).join("") : `<tr><td colspan="6" style="text-align:center;color:#8a939d;">暂无匹配文件</td></tr>`;
+      renderCollectPagination(fileRows);
+      updateBatchSaveButton();
+    }
+
+    function getCollectionParticipants(item, status) {
+      const submittedCount = Math.min(item.submitted || 0, collectionParticipantDirectory.length);
+      const totalCount = Math.min(item.sendCount || item.should || 0, collectionParticipantDirectory.length);
+      return status === "submitted"
+        ? collectionParticipantDirectory.slice(0, submittedCount)
+        : collectionParticipantDirectory.slice(submittedCount, totalCount);
+    }
+
+    function openParticipantListModal(status) {
+      const item = resources.find(resource => String(resource.id) === String(activeCollectDetailResourceId));
+      if (!item) return;
+      const mask = document.getElementById("modalMask");
+      mask.dataset.participantStatus = status;
+      openModal("participantList");
+    }
+
+    function openCollectDetail(item) {
+      activeCollectDetailResourceId = item.id;
+      activeCollectDetailMode = "published";
+      selectedCollectFiles = new Set();
+      collectDetailPage = 1;
+      document.getElementById("pcListPage").classList.add("hide");
+      document.querySelector(".page-head")?.classList.add("hide");
+      document.getElementById("publishDetailPage").classList.remove("show");
+      document.getElementById("collectDetailPage").classList.add("show");
+      document.getElementById("collectDetailInfo").innerHTML = `
+        <div><b>收集名称</b>${item.name}</div>
+        <div><b>发布对象</b>${item.target}</div>
+        <div><b>收集状态</b>${item.status}</div>
+        <div><b>发布时间</b>${formatDateTime(item.publishDate)}</div>
+        <div><b>截止时间</b>${formatDateTime(item.deadline || "-")}</div>
+        <div><b>发送人数</b>${item.sendCount || item.should || 0}</div>
+        <button class="info-stat-link" type="button" data-participant-list="submitted"><b>提交人数</b><span>${item.submitted || 0}</span></button>
+        <button class="info-stat-link unsubmitted-stat" type="button" data-participant-list="unsubmitted"><b>未提交人数</b><span>${Math.max((item.sendCount || item.should || 0) - (item.submitted || 0), 0)}</span></button>
+      `;
+      document.getElementById("collectDetailListTitle").textContent = "资料收集列表";
+      document.getElementById("collectDetailFilterWrap").classList.remove("hide");
+      document.getElementById("collectStudentFilter").value = "";
+      renderCollectSubmissions();
+    }
+
+    function openReceivedCollectDetail(task) {
+      activeCollectDetailMode = "received";
+      document.getElementById("pcListPage").classList.add("hide");
+      document.querySelector(".page-head")?.classList.add("hide");
+      document.getElementById("publishDetailPage").classList.remove("show");
+      document.getElementById("collectDetailPage").classList.add("show");
+      document.getElementById("collectDetailInfo").innerHTML = `
+        <div><b>收集名称</b>${task.name}</div>
+        <div><b>发布人</b>${task.publisher}</div>
+        <div><b>状态</b>${task.status}</div>
+        <div><b>发布时间</b>${formatDateTime(task.publishDate)}</div>
+        <div><b>截止时间</b>${formatDateTime(task.deadline)}</div>
+        <div class="file-info"><b>上传要求</b>${task.requirement}</div>
+      `;
+      document.getElementById("collectDetailListTitle").textContent = "我的资料";
+      document.getElementById("collectDetailFilterWrap").classList.add("hide");
+      document.getElementById("collectDetailPagination").innerHTML = "";
+      document.getElementById("collectDetailTableHead").innerHTML = `
+        <tr>
+          <th style="width: 38%;">文件名称</th>
+          <th style="width: 18%;">文件大小</th>
+          <th style="width: 29%;">提交时间</th>
+          <th style="width: 15%;">操作</th>
+        </tr>
+      `;
+      document.getElementById("collectSubmissionRows").innerHTML = task.files.length
+        ? task.files.map(file => `
+          <tr>
+            <td>${file}</td>
+            <td>${collectFileSizeMap[file] || "1.2M"}</td>
+            <td>${task.submitTime}</td>
+            <td><div class="collect-file-actions"><button class="link" type="button" data-view-file>预览</button><button class="link muted" type="button" data-download>下载</button></div></td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="4" style="text-align:center;color:#8a939d;">暂未上传资料</td></tr>`;
+    }
+
+    function renderAppStatusFilters() {
+      const filterWrap = document.getElementById("appStatusFilters");
+      const showCollectFilters = activeAppRole !== "teacher" || activeTeacherResourceTab === "资料收集";
+      filterWrap.classList.toggle("hide", !showCollectFilters);
+      if (!showCollectFilters) {
+        filterWrap.innerHTML = "";
+        return;
+      }
+
+      const filters = activeAppRole === "teacher"
+        ? (activeTeacherCollectView === "published" ? ["全部", "未开始", "进行中", "已结束"] : ["全部", "未上传", "已上传", "已结束"])
+        : ["全部", "待上传", "已上传"];
+
+      if (activeAppRole === "teacher") {
+        filterWrap.classList.add("teacher-collect-status");
+        filterWrap.style.gridTemplateColumns = "";
+        filterWrap.innerHTML = `
+          <span>状态</span>
+          <select id="teacherCollectStatusSelect">
+            ${filters.map(filter => `<option value="${filter}" ${activeAppFilter === filter ? "selected" : ""}>${filter}</option>`).join("")}
+          </select>
+        `;
+        return;
+      }
+
+      filterWrap.classList.remove("teacher-collect-status");
+      filterWrap.style.gridTemplateColumns = `repeat(${filters.length}, minmax(0, 1fr))`;
+      filterWrap.innerHTML = filters.map(filter => `
+        <button class="${activeAppFilter === filter ? "active" : ""}" type="button" data-app-filter="${filter}">${filter}</button>
+      `).join("");
+    }
+
+    function getTeacherResourceList() {
+      return activeTeacherResourceTab === "我的资源" ? teacherMyResources : teacherSchoolResources;
+    }
+
+    function isAppTaskEnded(task) {
+      const resource = task?.resourceId ? resources.find(item => String(item.id) === String(task.resourceId)) : null;
+      return task?.status === "已结束" || resource?.status === "已结束";
+    }
+
+    function getActiveResourceFolder() {
+      return activeTeacherResourceTab === "我的资源" ? activeMyResourceFolder : activeSchoolResourceFolder;
+    }
+
+    function getVisibleTeacherResources() {
+      const list = getTeacherResourceList().filter(item => !item.isFolder);
+      const folder = getActiveResourceFolder();
+      if (activeTeacherResourceTab === "我的资源") {
+        return folder === "全部" ? list : list.filter(item => item.folder === folder);
+      }
+      return list.filter(item => item.folder === folder);
+    }
+
+    function getTeacherResourceFolders() {
+      if (activeTeacherResourceTab === "我的资源") {
+        return [
+          { name: "全部", level: 0 },
+          { name: "班级通知", level: 1 },
+          { name: "教学资料", level: 1 },
+          { name: "学生材料", level: 1 }
+        ];
+      }
+      return [
+        { name: "根目录", level: 0 },
+        { name: "教学教研", level: 1 },
+        { name: "教学评价", level: 2 },
+        { name: "校本资源", level: 2 },
+        { name: "教研活动", level: 2 },
+        { name: "课程教学", level: 2 },
+        { name: "课件", level: 1 }
+      ];
+    }
+
+    function renderTeacherResourceFiles() {
+      const list = getVisibleTeacherResources();
+      const folderBar = `
+        <div class="folder-select">
+          <button class="folder-select-trigger" type="button" id="toggleMobileFolderTree">
+            <span>${activeTeacherResourceTab === "我的资源" && getActiveResourceFolder() === "全部" ? "全部" : getActiveResourceFolder()}</span>
+            <span>⌄</span>
+          </button>
+        </div>
+      `;
+      const cards = list.map((item, index) => `
+        <div class="mobile-resource-card">
+          <div class="mobile-resource-main">
+            <span class="mobile-resource-icon">${item.format}</span>
+            <div>
+              <div class="mobile-resource-name">${item.name}</div>
+              <div class="mobile-resource-meta">${item.size}　${item.time}</div>
+            </div>
+          </div>
+          <div class="mobile-resource-actions">
+            <button class="link" type="button" data-mobile-resource-view="${index}">查看</button><button class="link muted" type="button" data-mobile-resource-download="${index}">下载</button><button class="link" type="button" data-mobile-resource-edit="${index}">编辑</button><button class="link danger" type="button" data-mobile-resource-delete="${index}">删除</button>
+          </div>
+        </div>
+      `).join("");
+      document.getElementById("appTaskList").innerHTML = folderBar + (cards || `
+        <div class="task-card" style="text-align:center;color:#8a939d;line-height:1.8;">当前文件夹暂无资源</div>
+      `);
+    }
+
+    function renderAppTasks() {
+      const isTeacher = activeAppRole === "teacher";
+      const isTeacherCollect = isTeacher && activeTeacherResourceTab === "资料收集";
+      document.getElementById("teacherResourceTabs").classList.toggle("hide", !isTeacher);
+      document.getElementById("teacherCollectTabs").classList.toggle("hide", !isTeacherCollect);
+      document.querySelectorAll("[data-teacher-resource-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.teacherResourceTab === activeTeacherResourceTab);
+      });
+      document.querySelectorAll("[data-teacher-collect-view]").forEach(button => {
+        button.classList.toggle("active", button.dataset.teacherCollectView === activeTeacherCollectView);
+      });
+      const appResourceTitle = document.getElementById("appResourceTitle");
+      appResourceTitle.textContent = isTeacher ? "" : "资料收集";
+      appResourceTitle.classList.toggle("hide", isTeacher);
+      document.getElementById("openAppCollectCreate").textContent = "+";
+      document.getElementById("openAppCollectCreate").classList.toggle("show", isTeacher && (!isTeacherCollect || activeTeacherCollectView === "published"));
+      document.getElementById("phoneRoleLabel").textContent = isTeacher ? `教师端${activeTeacherResourceTab}` : "家长端资料收集";
+
+      if (isTeacher && activeTeacherResourceTab !== "资料收集") {
+        renderTeacherResourceFiles();
+        return;
+      }
+
+      if (activeAppRole === "teacher" && activeTeacherCollectView === "received") {
+        const receivedList = receivedCollects.filter(task => activeAppFilter === "全部" || task.status === activeAppFilter);
+        document.getElementById("appTaskList").innerHTML = receivedList.length ? receivedList.map(task => {
+          const isEnded = task.status === "已结束";
+          const statusClass = isEnded ? "late" : task.status === "已上传" ? "done" : "open";
+          return `
+            <div class="task-card">
+              <div class="task-top">
+                <h4>${task.name}</h4>
+                <span class="status-badge ${statusClass}">${task.status}</span>
+              </div>
+              <div class="task-meta">
+                <span>发布人：${task.publisher}</span>
+                <span>发布时间：${formatDateTime(task.publishDate)}</span>
+                <span>截止时间：${formatDateTime(task.deadline)}</span>
+                <span>上传要求：${task.requirement}</span>
+              </div>
+              <div class="task-actions">
+                <button class="mobile-btn" type="button" data-view-teacher-received="${task.id}">查看详情</button>
+                ${isEnded ? `<button class="mobile-btn primary" type="button" disabled>已结束</button>` : `<button class="mobile-btn primary" type="button" data-teacher-received-upload="${task.id}">${task.status === "已上传" ? "继续上传" : "上传资料"}</button>`}
+              </div>
+            </div>
+          `;
+        }).join("") : `<div class="task-card" style="text-align:center;color:#8a939d;line-height:1.8;">暂无匹配的资料收集</div>`;
+        return;
+      }
+
+      if (activeAppRole === "teacher") {
+        const teacherList = resources.filter(task => {
+          const matchesModule = task.type === "收集";
+          const matchesFilter = activeAppFilter === "全部" || task.status === activeAppFilter;
+          return matchesModule && matchesFilter;
+        });
+
+        if (!teacherList.length) {
+          document.getElementById("appTaskList").innerHTML = `
+            <div class="task-card" style="text-align:center;color:#8a939d;line-height:1.8;">
+              暂无匹配的资料收集
+            </div>
+          `;
+          return;
+        }
+
+        document.getElementById("appTaskList").innerHTML = teacherList.map(task => {
+          const isEnded = task.status === "已结束";
+          const statusClass = task.status === "进行中" ? "open" : task.status === "未开始" ? "done" : "late";
+          return `
+            <div class="task-card">
+              <div class="task-top">
+                <h4>${task.name}</h4>
+                <span class="status-badge ${statusClass}">${task.status}</span>
+              </div>
+              <div class="task-meta">
+                <span>发布对象：${task.target}</span>
+                <span>发布时间：${formatDateTime(task.publishDate)}</span>
+                <span>截止时间：${formatDateTime(task.deadline || "-")}</span>
+                <span>发送人数：${task.sendCount || task.should || 0}　提交人数：${task.submitted || 0}</span>
+              </div>
+              <div class="task-actions">
+                <button class="mobile-btn" type="button" data-view-teacher-collect="${task.id}">查看详情</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+        return;
+      }
+
+      const list = appTasks.filter(task => {
+        const matchesModule = task.category === "资料收集";
+        const matchesFilter = activeAppFilter === "全部" || task.type === activeAppFilter;
+        return matchesModule && matchesFilter;
+      });
+
+      if (!list.length) {
+        document.getElementById("appTaskList").innerHTML = `
+          <div class="task-card" style="text-align:center;color:#8a939d;line-height:1.8;">
+            暂无匹配的资料收集
+          </div>
+        `;
+        return;
+      }
+
+      document.getElementById("appTaskList").innerHTML = list.map(task => {
+        const isEnded = isAppTaskEnded(task);
+        const isUpload = task.type === "待上传";
+        const isSubmitted = task.type === "已上传";
+        const statusClass = isEnded ? "late" : isUpload ? "open" : "done";
+        const statusText = isEnded ? "已结束" : task.type;
+        return `
+          <div class="task-card" data-task="${task.id}">
+            <div class="task-top">
+              <h4>${task.title}</h4>
+              <span class="status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <div class="task-meta">
+              <span>发布时间：${formatDateTime(task.publishTime)}</span>
+              <span>截止时间：${formatDateTime(task.deadline)}</span>
+              <span>上传要求：${task.desc}</span>
+            </div>
+            <div class="task-actions">
+              <button class="mobile-btn" type="button" data-view-mobile="${task.id}">查看详情</button>
+              ${isEnded ? `<button class="mobile-btn primary" type="button" disabled>已结束</button>` : isUpload ? `<button class="mobile-btn primary" type="button" data-upload="${task.id}">去上传</button>` : isSubmitted ? `<button class="mobile-btn primary" type="button" data-upload="${task.id}">继续上传</button>` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function getMobileFileList(files, options = {}) {
+      if (!files.length) return `<div class="mobile-file"><span>暂无文件</span><span></span></div>`;
+      return files.map(file => `
+        <div class="mobile-file">
+          <span>${file}</span>
+          <div class="mobile-file-actions">
+            <button class="link" type="button" data-view-file>查看</button>
+            <button class="link muted" type="button" data-mobile-download>下载</button>
+            ${options.saveAs ? `<button class="link" type="button" data-mobile-save-as="${file}">另存为</button>` : ""}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function markAppPublishRead(task) {
+      if (task.category !== "资料发布" || task.type !== "待查看") return;
+      task.type = "已查看";
+      task.readTime = "2026-06-13 18:20";
+
+      const reader = publishReaders.find(item => item.student === "刘思远");
+      if (reader && reader.status === "未读") {
+        reader.status = "已读";
+        reader.readTime = task.readTime;
+      }
+
+      const resource = resources.find(item => item.id === task.resourceId);
+      if (resource) {
+        const current = resource.readCount || 0;
+        resource.readCount = Math.min((resource.sendCount || current + 1), current + 1);
+        task.readCount = resource.readCount;
+      }
+      renderRows();
+      renderAppTasks();
+    }
+
+    function finishPendingAppRead() {
+      if (!pendingAppReadTaskId) return;
+      const task = appTasks.find(item => item.id === pendingAppReadTaskId);
+      if (task) markAppPublishRead(task);
+      pendingAppReadTaskId = "";
+    }
+
+    function chooseAppUploadFiles(taskId) {
+      const task = appTasks.find(item => item.id === taskId);
+      if (!task) return;
+      if (isAppTaskEnded(task)) {
+        showToast("收集已结束，无法上传资料");
+        return;
+      }
+      const currentCount = task.uploadFiles?.length || 0;
+      if (currentCount >= publishMaxFileCount) {
+        showToast(`最多只能上传 ${publishMaxFileCount} 个文件`);
+        return;
+      }
+      appUploadTaskId = taskId;
+      appUploadFiles = [];
+      document.getElementById("appUploadInput").click();
+    }
+
+    function switchAppRole(role) {
+      activeAppRole = role;
+      activeAppFilter = "全部";
+      if (role === "teacher") {
+        activeTeacherResourceTab = "资料收集";
+        activeTeacherCollectView = "published";
+      }
+      document.querySelectorAll("[data-app-role]").forEach(button => {
+        button.classList.toggle("active", button.dataset.appRole === role);
+      });
+      document.getElementById("resourceDetailScreen").classList.remove("active");
+      document.getElementById("appParticipantScreen").classList.remove("active");
+      document.getElementById("appCollectCreateScreen").classList.remove("active");
+      document.getElementById("workbenchScreen").classList.remove("active");
+      document.getElementById("resourceScreen").classList.add("active");
+      renderAppStatusFilters();
+      renderAppTasks();
+    }
+
+    function uploadTeacherResource() {
+      const list = getTeacherResourceList();
+      list.unshift({
+        name: activeTeacherResourceTab === "我的资源" ? "新上传教学资料.pdf" : "新上传学校资料.pdf",
+        size: "1.2M",
+        time: "2026-06-16 18:20",
+        format: "PDF",
+        folder: getActiveResourceFolder()
+      });
+      renderAppTasks();
+      showToast("资源已上传");
+    }
+
+    function openMobileResourceEdit(index) {
+      const item = getVisibleTeacherResources()[index];
+      if (!item) return;
+      pendingMobileResourceIndex = getTeacherResourceList().indexOf(item);
+      openAppResourceSheet("edit");
+    }
+
+    function openMobileResourceDelete(index) {
+      const item = getVisibleTeacherResources()[index];
+      if (!item) return;
+      pendingMobileResourceIndex = getTeacherResourceList().indexOf(item);
+      openDeleteConfirm({
+        surface: "app",
+        successText: "资源已删除",
+        onConfirm: () => {
+          const list = getTeacherResourceList();
+          if (pendingMobileResourceIndex >= 0) list.splice(pendingMobileResourceIndex, 1);
+          pendingMobileResourceIndex = -1;
+          renderAppTasks();
+        }
+      });
+    }
+
+    function openMobileFolderSheet() {
+      const folders = getTeacherResourceFolders();
+      const mask = document.getElementById("appSheetMask");
+      const title = document.getElementById("appSheetTitle");
+      const body = document.getElementById("appSheetBody");
+      const actions = document.getElementById("appSheetActions");
+      mask.dataset.mode = "folder";
+      title.textContent = "选择文件夹";
+      body.innerHTML = `
+        <div class="folder-tree">
+          ${folders.map(folder => `
+            <button class="folder-tree-node level-${folder.level} ${folder.name === getActiveResourceFolder() ? "active" : ""}" type="button" data-mobile-folder="${folder.name}">
+              <span>${folder.level === 0 ? "▾" : "▸"}</span><span>📁</span><span>${folder.name}</span>
+            </button>
+          `).join("")}
+        </div>
+      `;
+      actions.innerHTML = `<button class="mobile-btn" type="button" id="cancelAppSheet">取消</button>`;
+      actions.style.gridTemplateColumns = "1fr";
+      mask.classList.add("show");
+    }
+
+    function openMobileSubmissionSheet(submitter) {
+      const submission = collectSubmissions.find(item => (item.submitter || item.student) === submitter);
+      if (!submission) return;
+      const mask = document.getElementById("appSheetMask");
+      const title = document.getElementById("appSheetTitle");
+      const body = document.getElementById("appSheetBody");
+      const actions = document.getElementById("appSheetActions");
+      mask.dataset.mode = "submission";
+      title.textContent = "上传信息";
+      body.innerHTML = `
+        <div class="info-list">
+          <div><b>提交人员</b><span>${submitter}</span></div>
+          <div><b>提交时间</b><span>${submission.submitTime}</span></div>
+        </div>
+        <div class="mobile-file-list">${getMobileFileList(submission.files || [], { saveAs: true })}</div>
+      `;
+      actions.innerHTML = `<button class="mobile-btn" type="button" id="cancelAppSheet">关闭</button>`;
+      actions.style.gridTemplateColumns = "1fr";
+      mask.classList.add("show");
+    }
+
+    function openMobileSaveAsSheet(fileName) {
+      const mask = document.getElementById("appSheetMask");
+      const title = document.getElementById("appSheetTitle");
+      const body = document.getElementById("appSheetBody");
+      const actions = document.getElementById("appSheetActions");
+      mask.dataset.mode = "mobileSaveAs";
+      title.textContent = "另存为";
+      body.innerHTML = `
+        <label class="mobile-form-field">保存位置
+          <select id="mobileSaveAsScope">
+            <option value="my">我的资源</option>
+            <option value="school">学校资源</option>
+          </select>
+        </label>
+        <label class="mobile-form-field">目标文件夹
+          <select id="mobileSaveAsFolder">
+            <option>我的资源 / 学生材料</option>
+            <option>我的资源 / 班级通知</option>
+            <option>我的资源 / 教学资料</option>
+          </select>
+        </label>
+        <label class="mobile-form-field">保存文件<input value="${fileName}" readonly></label>
+      `;
+      actions.innerHTML = `
+        <button class="mobile-btn" type="button" id="cancelAppSheet">取消</button>
+        <button class="mobile-btn primary" type="button" id="confirmMobileSaveAs">确认保存</button>
+      `;
+      actions.style.gridTemplateColumns = "";
+      mask.classList.add("show");
+    }
+
+    function updateMobileSaveAsFolderOptions(scope) {
+      const folder = document.getElementById("mobileSaveAsFolder");
+      if (!folder) return;
+      const options = scope === "school"
+        ? ["学校资源 / 根目录", "学校资源 / 教学教研", "学校资源 / 课件", "学校资源 / 课程教学"]
+        : ["我的资源 / 学生材料", "我的资源 / 班级通知", "我的资源 / 教学资料"];
+      folder.innerHTML = options.map(item => `<option>${item}</option>`).join("");
+    }
+
+    function openMobileResourceView(index) {
+      const item = getVisibleTeacherResources()[index];
+      if (!item) return;
+      document.querySelector("#resourceDetailScreen .app-head span:nth-child(2)").textContent = item.name;
+      document.getElementById("appDetailBody").innerHTML = `
+        <div class="file-content-preview">
+          这里直接显示 ${item.name} 的文件内容。移动端查看文件时不再展示格式、大小、操作时间等额外信息，只保留正文、图片或表格预览内容。
+        </div>
+      `;
+      document.getElementById("appDetailAction").style.display = "none";
+      document.getElementById("resourceScreen").classList.remove("active");
+      document.getElementById("resourceDetailScreen").classList.add("active");
+    }
+
+    function downloadMobileResource(index) {
+      const item = getVisibleTeacherResources()[index];
+      if (!item) return;
+      const blob = new Blob([`${item.name}\n\n文件内容示例。`], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = item.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast("文件已下载到本地");
+    }
+
+    function openAppResourceSheet(mode) {
+      const item = getTeacherResourceList()[pendingMobileResourceIndex];
+      if (!item) return;
+      const mask = document.getElementById("appSheetMask");
+      const title = document.getElementById("appSheetTitle");
+      const body = document.getElementById("appSheetBody");
+      const actions = document.getElementById("appSheetActions");
+      mask.dataset.mode = mode;
+      actions.style.gridTemplateColumns = "";
+
+      if (mode === "edit") {
+        title.textContent = "编辑";
+        body.innerHTML = `
+          <label class="mobile-form-field">文件名称<input id="appSheetResourceName" maxlength="20" value="${item.name}"></label>
+          <span class="mobile-hint">最多输入 20 个字符。</span>
+        `;
+        actions.innerHTML = `
+          <button class="mobile-btn" type="button" id="cancelAppSheet">取消</button>
+          <button class="mobile-btn primary" type="button" id="confirmAppSheet">确认</button>
+        `;
+      } else {
+        title.textContent = "删除";
+        body.innerHTML = `
+          <div class="deadline-warning" style="margin:0;">确定要删除么？删除后不可恢复</div>
+        `;
+        actions.innerHTML = `
+          <button class="mobile-btn" type="button" id="cancelAppSheet">取消</button>
+          <button class="mobile-btn primary" type="button" id="confirmAppSheet">确认删除</button>
+        `;
+      }
+      mask.classList.add("show");
+      document.getElementById("appSheetResourceName")?.focus();
+    }
+
+    function closeAppResourceSheet() {
+      const mask = document.getElementById("appSheetMask");
+      if (mask.dataset.mode === "deleteConfirm") pendingDeleteConfirm = null;
+      mask.classList.remove("show");
+    }
+
+    function confirmAppResourceSheet() {
+      const mask = document.getElementById("appSheetMask");
+      const mode = mask.dataset.mode;
+      const list = getTeacherResourceList();
+      if (mode === "edit") {
+        const input = document.getElementById("appSheetResourceName");
+        const value = input?.value.trim() || "";
+        if (!value) {
+          showToast("请输入文件名称");
+          input?.focus();
+          return;
+        }
+        if (value.length > 20) {
+          showToast("文件名称最多 20 个字符");
+          input?.focus();
+          return;
+        }
+        if (list[pendingMobileResourceIndex]) list[pendingMobileResourceIndex].name = value;
+        closeAppResourceSheet();
+        renderAppTasks();
+        showToast("文件名称已更新");
+      } else {
+        if (pendingMobileResourceIndex >= 0) list.splice(pendingMobileResourceIndex, 1);
+        closeAppResourceSheet();
+        renderAppTasks();
+        showToast("资源已删除");
+      }
+    }
+
+    function openAppCollectCreate() {
+      appCollectAttachmentFiles = [];
+      renderAppCollectAttachment();
+      showAppCollectFormError("");
+      document.getElementById("appCollectTitleInput").value = "春季学籍材料收集";
+      document.getElementById("appCollectTargetInput").value = getCollectTargetText();
+      document.getElementById("appCollectStartMode").value = "now";
+      document.getElementById("appCollectStartTimeField").style.display = "none";
+      document.getElementById("appCollectStartTime").value = "";
+      document.getElementById("appCollectDeadlineInput").value = "2026-06-20T18:00";
+      document.getElementById("appCollectRequirementInput").value = "请上传户口本首页、学生页及监护人页照片或 PDF。";
+      document.getElementById("resourceScreen").classList.remove("active");
+      document.getElementById("appCollectCreateScreen").classList.add("active");
+    }
+
+    function backToAppCollectList() {
+      document.getElementById("resourceDetailScreen").classList.remove("active");
+      document.getElementById("appParticipantScreen").classList.remove("active");
+      document.getElementById("appCollectCreateScreen").classList.remove("active");
+      document.getElementById("resourceScreen").classList.add("active");
+    }
+
+    function requireAppCollectValue(id, message) {
+      const field = document.getElementById(id);
+      if (field?.value?.trim()) return true;
+      showAppCollectFormError(message);
+      showToast(message);
+      field?.focus();
+      return false;
+    }
+
+    function confirmAppCollectCreate() {
+      if (!requireAppCollectValue("appCollectTitleInput", "请填写收集名称")) return;
+      if (!requireAppCollectValue("appCollectTargetInput", "请选择收集对象")) return;
+      if (!requireAppCollectValue("appCollectStartMode", "请选择开始方式")) return;
+      if (document.getElementById("appCollectStartMode").value === "schedule" && !requireAppCollectValue("appCollectStartTime", "请选择开始时间")) return;
+      if (!requireAppCollectValue("appCollectDeadlineInput", "请选择截止时间")) return;
+      if (!requireAppCollectValue("appCollectRequirementInput", "请填写上传要求")) return;
+
+      const title = document.getElementById("appCollectTitleInput").value.trim();
+      const target = document.getElementById("appCollectTargetInput").value.trim();
+      const deadlineInput = document.getElementById("appCollectDeadlineInput").value;
+      const deadline = deadlineInput ? `${deadlineInput.replace("T", " ")}:00` : "";
+      resources.unshift({
+        id: Date.now(),
+        name: title,
+        type: "收集",
+        target,
+        publishDate: "2026-06-16 18:20:00",
+        deadline,
+        sendCount: 36,
+        should: 36,
+        submitted: 0,
+        status: document.getElementById("appCollectStartMode").value === "schedule" ? "未开始" : "进行中"
+      });
+      activeAppFilter = "全部";
+      renderRows();
+      backToAppCollectList();
+      switchAppRole("teacher");
+      showToast("收集任务已发布");
+    }
+
+    function chooseTeacherCollectUpload(taskId) {
+      const task = resources.find(item => String(item.id) === String(taskId));
+      if (!task) return;
+      if (task.status === "已结束") {
+        showToast("收集已结束，无法上传资料");
+        return;
+      }
+      const currentCount = task.teacherUploadFiles?.length || 0;
+      if (currentCount >= publishMaxFileCount) {
+        showToast(`最多只能上传 ${publishMaxFileCount} 个文件`);
+        return;
+      }
+      appUploadTaskId = `teacher:${taskId}`;
+      appUploadFiles = [];
+      document.getElementById("appUploadInput").click();
+    }
+
+    function chooseTeacherReceivedUpload(taskId) {
+      const task = receivedCollects.find(item => item.id === taskId);
+      if (!task || task.status === "已结束") {
+        showToast("收集已结束，无法上传资料");
+        return;
+      }
+      if ((task.files || []).length >= publishMaxFileCount) {
+        showToast(`最多只能上传 ${publishMaxFileCount} 个文件`);
+        return;
+      }
+      appUploadTaskId = `teacher-received:${taskId}`;
+      appUploadFiles = [];
+      document.getElementById("appUploadInput").click();
+    }
+
+    function openTeacherReceivedCollectDetail(taskId) {
+      const task = receivedCollects.find(item => item.id === taskId);
+      if (!task) return;
+
+      const isEnded = task.status === "已结束";
+      const statusClass = isEnded ? "late" : task.status === "已上传" ? "done" : "open";
+      document.querySelector("#resourceDetailScreen .app-head span:nth-child(2)").textContent = "资料详情";
+      pendingAppReadTaskId = "";
+      document.getElementById("appDetailBody").innerHTML = `
+        <div class="mobile-panel">
+          <div class="detail-status-line">
+            <h3>${task.name}</h3>
+            <span class="status-badge ${statusClass}">${task.status}</span>
+          </div>
+          <div class="info-list">
+            <div><b>收集名称</b><span>${task.name}</span></div>
+            <div><b>发布人</b><span>${task.publisher}</span></div>
+            <div><b>状态</b><span>${task.status}</span></div>
+            <div><b>发布时间</b><span>${formatDateTime(task.publishDate)}</span></div>
+            <div><b>截止时间</b><span>${formatDateTime(task.deadline)}</span></div>
+            <div><b>上传要求</b><span>${task.requirement}</span></div>
+          </div>
+          <div class="section-title">我的资料</div>
+          <div class="mobile-file-list">
+            ${getMobileFileList(task.files || [], { saveAs: true })}
+          </div>
+          ${task.submitTime && task.submitTime !== "-" ? `<div class="info-list"><div><b>最新提交时间</b><span>${task.submitTime}</span></div></div>` : ""}
+        </div>
+      `;
+      document.getElementById("appDetailAction").innerHTML = isEnded
+        ? `<button class="mobile-btn primary" type="button" disabled>已结束，无法上传</button>`
+        : `<button class="mobile-btn primary" type="button" data-teacher-received-upload="${task.id}">${task.status === "已上传" ? "继续上传" : "上传资料"}</button>`;
+      document.getElementById("appDetailAction").style.display = "grid";
+      document.getElementById("resourceScreen").classList.remove("active");
+      document.getElementById("resourceDetailScreen").classList.add("active");
+    }
+
+    function getMobileCollectFileRows() {
+      return collectSubmissions.flatMap(item => {
+        if (item.status !== "已提交") return [];
+        const submitterName = item.submitter || item.student;
+        return (item.files || []).map(file => ({
+          id: `${submitterName}::${file}`,
+          file,
+          size: collectFileSizeMap[file] || "1.2M",
+          submitter: submitterName,
+          submitTime: item.submitTime
+        }));
+      });
+    }
+
+    function renderMobileCollectFileList() {
+      const list = document.getElementById("mobileCollectFileList");
+      const selectAll = document.getElementById("selectAllMobileCollectFiles");
+      const saveButton = document.getElementById("mobileBatchSaveAsBtn");
+      if (!list || !selectAll || !saveButton) return;
+      const fileRows = getMobileCollectFileRows();
+      const allSelected = fileRows.length > 0 && fileRows.every(item => selectedMobileCollectFiles.has(item.id));
+      selectAll.checked = allSelected;
+      saveButton.disabled = selectedMobileCollectFiles.size === 0;
+      list.innerHTML = fileRows.length ? fileRows.map(item => `
+        <div class="mobile-file mobile-file-select with-actions">
+          <input type="checkbox" data-mobile-collect-file="${item.id}" ${selectedMobileCollectFiles.has(item.id) ? "checked" : ""}>
+          <div class="mobile-collect-file-info">
+            <div class="mobile-collect-file-name"><strong>${item.file}</strong><span class="mobile-collect-file-size">${item.size}</span></div>
+            <small class="mobile-collect-file-meta">${item.submitter} · ${formatDateTime(item.submitTime)}</small>
+          </div>
+          <div class="mobile-file-actions"><button class="link" type="button" data-view-file>预览</button><button class="link muted" type="button" data-mobile-download>下载</button></div>
+        </div>
+      `).join("") : `<div class="mobile-file"><span>暂无已提交文件</span><span></span></div>`;
+    }
+
+    function openAppParticipantList(type, task) {
+      const sentParticipants = [
+        { name: "王小一", unit: "一年级1班" },
+        { name: "李明轩", unit: "一年级1班" },
+        { name: "陈可欣", unit: "一年级1班" },
+        { name: "赵一诺", unit: "一年级1班" },
+        { name: "刘思远", unit: "一年级1班" }
+      ];
+      const submittedParticipants = collectSubmissions
+        .filter(item => item.status === "已提交")
+        .map(item => ({ name: item.submitter || item.student, unit: task.target || "一年级1班" }));
+      const isSubmitted = type === "submitted";
+      const participants = isSubmitted ? submittedParticipants : sentParticipants;
+      document.getElementById("appParticipantTitle").textContent = isSubmitted ? "提交人数" : "发送人数";
+      document.getElementById("appParticipantBody").innerHTML = `
+        <div class="mobile-panel">
+          <div class="mobile-file-list">
+            ${participants.map(item => `
+              <div class="mobile-file">
+                <strong>${item.name}</strong>
+                <span class="uploaded-meta">${item.unit}</span>
+              </div>
+            `).join("") || `<div class="mobile-file"><span>暂无人员</span><span></span></div>`}
+          </div>
+        </div>
+      `;
+      document.getElementById("resourceDetailScreen").classList.remove("active");
+      document.getElementById("appParticipantScreen").classList.add("active");
+    }
+
+    function openMobileBatchSaveAsSheet() {
+      pendingMobileBatchSaveFiles = getMobileCollectFileRows().filter(item => selectedMobileCollectFiles.has(item.id));
+      if (!pendingMobileBatchSaveFiles.length) {
+        showToast("请先选择文件");
+        return;
+      }
+      const mask = document.getElementById("appSheetMask");
+      const title = document.getElementById("appSheetTitle");
+      const body = document.getElementById("appSheetBody");
+      const actions = document.getElementById("appSheetActions");
+      mask.dataset.mode = "mobileBatchSaveAs";
+      title.textContent = "另存为";
+      body.innerHTML = `
+        <label class="mobile-form-field">保存位置
+          <select id="mobileSaveAsScope">
+            <option value="my">我的资源</option>
+            <option value="school">学校资源</option>
+          </select>
+        </label>
+        <label class="mobile-form-field">目标文件夹
+          <select id="mobileSaveAsFolder">
+            <option>我的资源 / 学生材料</option>
+            <option>我的资源 / 班级通知</option>
+            <option>我的资源 / 教学资料</option>
+          </select>
+        </label>
+        <div class="mobile-hint">同一目标文件夹内存在同名文件时，将自动跳过，不重复导入。</div>
+      `;
+      actions.innerHTML = `
+        <button class="mobile-btn" type="button" id="cancelAppSheet">取消</button>
+        <button class="mobile-btn primary" type="button" id="confirmMobileBatchSaveAs">确认保存</button>
+      `;
+      actions.style.gridTemplateColumns = "";
+      mask.classList.add("show");
+    }
+
+    function commitMobileBatchSaveAs() {
+      const scope = document.getElementById("mobileSaveAsScope")?.value || "my";
+      const folderPath = document.getElementById("mobileSaveAsFolder")?.value || "";
+      const folder = folderPath.split(" / ").pop();
+      const destination = scope === "school" ? teacherSchoolResources : teacherMyResources;
+      const duplicates = [];
+      let savedCount = 0;
+      pendingMobileBatchSaveFiles.forEach(file => {
+        const exists = destination.some(item => !item.isFolder && item.folder === folder && item.name === file.file);
+        if (exists) {
+          duplicates.push(file.file);
+          return;
+        }
+        destination.push({ name: file.file, size: file.size, time: "2026-06-13 18:20:00", format: getDisplayFileFormat(file.file), folder });
+        savedCount += 1;
+      });
+      pendingMobileBatchSaveFiles = [];
+      selectedMobileCollectFiles = new Set();
+      renderMobileCollectFileList();
+      closeAppResourceSheet();
+      showToast(duplicates.length ? `${savedCount ? `已保存 ${savedCount} 个文件；` : ""}${duplicates.join("、")} 已存在，未重复导入` : `已保存 ${savedCount} 个文件`);
+    }
+
+    function openTeacherCollectDetail(taskId) {
+      const task = resources.find(item => String(item.id) === String(taskId));
+      if (!task) return;
+
+      activeMobileCollectTaskId = String(taskId);
+      selectedMobileCollectFiles = new Set();
+      const statusClass = task.status === "进行中" ? "open" : task.status === "未开始" ? "done" : "late";
+      document.querySelector("#resourceDetailScreen .app-head span:nth-child(2)").textContent = "资料详情";
+      pendingAppReadTaskId = "";
+      document.getElementById("appDetailBody").innerHTML = `
+        <div class="mobile-panel">
+          <div class="detail-status-line">
+            <h3>${task.name}</h3>
+            <span class="status-badge ${statusClass}">${task.status}</span>
+          </div>
+          <div class="info-list">
+            <div><b>收集名称</b><span>${task.name}</span></div>
+            <div><b>发布对象</b><span>${task.target}</span></div>
+            <div><b>发布时间</b><span>${formatDateTime(task.publishDate)}</span></div>
+            <div><b>截止时间</b><span>${formatDateTime(task.deadline || "-")}</span></div>
+            <div><b>发送人数</b><button class="mobile-count-link" type="button" data-app-participant-list="sent">${task.sendCount || task.should || 0}</button></div>
+            <div><b>提交人数</b><button class="mobile-count-link" type="button" data-app-participant-list="submitted">${task.submitted || 0}</button></div>
+            <div><b>上传要求</b><span>${task.requirement || "请按收集要求上传相关资料。"}</span></div>
+          </div>
+          <div class="section-title">说明附件</div>
+          <div class="mobile-file-list">
+            ${getMobileFileList(task.files || task.teacherFiles || ["材料填写说明.pdf"])}
+          </div>
+          <div class="mobile-section-head">
+            <div class="section-title">资料收集列表</div>
+            <button class="mobile-batch-save" type="button" id="mobileBatchSaveAsBtn" disabled>另存为</button>
+          </div>
+          <label class="mobile-file" style="margin-top:10px;">
+            <span><input id="selectAllMobileCollectFiles" type="checkbox"> 全选</span>
+            <span></span>
+          </label>
+          <div class="mobile-file-list" id="mobileCollectFileList">
+          </div>
+        </div>
+      `;
+
+      document.getElementById("appDetailAction").innerHTML = "";
+      document.getElementById("appDetailAction").style.display = "none";
+      document.getElementById("resourceScreen").classList.remove("active");
+      document.getElementById("resourceDetailScreen").classList.add("active");
+      renderMobileCollectFileList();
+    }
+
+    function openAppDetail(taskId) {
+      const task = appTasks.find(item => item.id === taskId);
+      if (!task) return;
+
+      document.querySelector("#resourceDetailScreen .app-head span:nth-child(2)").textContent = "资料详情";
+      pendingAppReadTaskId = "";
+      const isUpload = task.type === "待上传";
+      const isSubmitted = task.type === "已上传";
+      const isEnded = isAppTaskEnded(task);
+      const statusClass = isEnded ? "late" : isUpload ? "open" : "done";
+      const statusText = isEnded ? "已结束" : task.type;
+      const body = document.getElementById("appDetailBody");
+      const action = document.getElementById("appDetailAction");
+
+      body.innerHTML = `
+        <div class="mobile-panel">
+          <div class="detail-status-line">
+            <h3>${task.title}</h3>
+            <span class="status-badge ${statusClass}">${statusText}</span>
+          </div>
+          <div class="info-list">
+            <div><b>收集名称</b><span>${task.title}</span></div>
+            <div><b>发布时间</b><span>${formatDateTime(task.publishTime)}</span></div>
+            <div><b>截止时间</b><span>${formatDateTime(task.deadline)}</span></div>
+            <div><b>上传要求</b><span>${task.desc}</span></div>
+          </div>
+          <div class="section-title">说明附件</div>
+          <div class="mobile-file-list">
+            ${getMobileFileList(task.teacherFiles)}
+          </div>
+          ${isSubmitted ? `
+            <div class="section-title" style="margin-top:14px;">我的上传</div>
+            <div class="info-list"><div><b>最新提交时间</b><span>${task.submitTime || "-"}</span></div></div>
+            <div class="mobile-file-list">${getMobileFileList(task.uploadFiles)}</div>
+          ` : ""}
+        </div>
+      `;
+
+      action.innerHTML = isEnded
+        ? `<button class="mobile-btn primary" type="button" disabled>已结束，无法上传</button>`
+        : isUpload
+        ? `<button class="mobile-btn primary" type="button" data-upload="${task.id}">上传资料</button>`
+        : `<button class="mobile-btn primary" type="button" data-upload="${task.id}">继续上传</button>`;
+      action.style.display = action.innerHTML.trim() ? "grid" : "none";
+
+      document.getElementById("resourceScreen").classList.remove("active");
+      document.getElementById("resourceDetailScreen").classList.add("active");
+    }
+
+    function openModal(mode) {
+      const mask = document.getElementById("modalMask");
+      const modal = mask.querySelector(".modal");
+      const title = document.getElementById("modalTitle");
+      const body = document.getElementById("modalBody");
+      const confirm = document.getElementById("confirmModal");
+      modal.classList.remove("rules-modal", "participant-modal");
+
+      if (mode === "archive") {
+        title.textContent = "归档到我的资源";
+        confirm.textContent = "确认归档";
+        body.innerHTML = `
+          <label>目标文件夹<select><option>归档材料 / 春季学籍材料</option><option>学生材料</option><option>班级通知</option></select></label>
+          <label>归档结构<select><option>收集任务名称 / 学生姓名 / 上传时间</option><option>收集任务名称 / 学生姓名</option><option>统一放入目标文件夹</option></select></label>
+          <label>来源记录<input value="保留来源任务、提交人、归档时间" readonly></label>
+        `;
+      } else if (mode === "endCollectConfirm") {
+        const item = resources.find(resource => String(resource.id) === String(pendingEndCollectId));
+        title.textContent = "结束收集";
+        confirm.textContent = "确认结束";
+        body.innerHTML = `
+          <div class="deadline-warning" style="margin:0;">
+            确定要结束「${item?.name || "当前收集"}」吗？结束后，未提交人员将无法继续提交资料，已提交资料仍可查看、下载和另存。
+          </div>
+        `;
+      } else if (mode === "saveAs") {
+        title.textContent = "另存为";
+        confirm.textContent = "确认保存";
+        body.innerHTML = `
+          <label>保存位置
+            <select id="saveAsScope">
+              <option value="my">我的资源</option>
+              <option value="school">学校资源</option>
+            </select>
+          </label>
+          <label>目标文件夹
+            <select id="saveAsFolder">
+              <option>我的资源 / 学生材料</option>
+              <option>我的资源 / 班级通知</option>
+              <option>我的资源 / 教学资料</option>
+            </select>
+          </label>
+          <label>保存文件<input value="家长提交材料.pdf" readonly></label>
+        `;
+      } else if (mode === "batchSaveAs") {
+        title.textContent = "另存为";
+        confirm.textContent = "确认保存";
+        body.innerHTML = `
+          <label>保存位置
+            <select id="saveAsScope">
+              <option value="my">我的资源</option>
+              <option value="school">学校资源</option>
+            </select>
+          </label>
+          <label>目标文件夹
+            <select id="saveAsFolder">
+              <option>我的资源 / 学生材料</option>
+              <option>我的资源 / 班级通知</option>
+              <option>我的资源 / 教学资料</option>
+            </select>
+          </label>
+          <div class="upload-hint">同一目标文件夹内存在同名文件时，将自动跳过，不重复导入。</div>
+        `;
+      } else if (mode === "participantList") {
+        const item = resources.find(resource => String(resource.id) === String(activeCollectDetailResourceId));
+        const status = mask.dataset.participantStatus === "unsubmitted" ? "unsubmitted" : "submitted";
+        const participants = item ? getCollectionParticipants(item, status) : [];
+        modal.classList.add("participant-modal");
+        title.textContent = status === "submitted" ? "已提交人员" : "未提交人员";
+        confirm.textContent = "关闭";
+        body.innerHTML = `
+          <div class="participant-list-meta">共 ${participants.length} 人</div>
+          <div class="participant-list-scroll">
+            <table class="participant-table">
+              <thead><tr><th>姓名</th><th>班级/部门</th></tr></thead>
+              <tbody>
+                ${participants.map(person => `<tr><td>${person.name}</td><td>${person.organization}</td></tr>`).join("") || "<tr><td colspan=\"2\" style=\"text-align:center;color:#8a939d;\">暂无人员</td></tr>"}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else if (mode === "submissionFiles") {
+        const student = mask.dataset.student;
+        const submission = collectSubmissions.find(item => (item.submitter || item.student) === student);
+        title.textContent = "上传文件";
+        confirm.textContent = "关闭";
+        body.innerHTML = `
+          <div class="modal-field">${student} 上传的文件
+            <div class="detail-file-list">
+              ${(submission?.files || []).map(file => `
+                <div class="detail-file-item">
+                  <div class="detail-file-name">${file}<span class="detail-file-format">${getDisplayFileFormat(file)}</span></div>
+                  <div class="detail-file-actions">
+                    <button class="link" type="button" data-view-file>查看</button>
+                    <button class="link muted" type="button" data-download>下载</button>
+                    <button class="link" type="button" data-save-as="${student}">另存为</button>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        `;
+      } else if (mode === "pcCollectUpload") {
+        pcCollectUploadFiles = [];
+        title.textContent = "上传资料";
+        confirm.textContent = "确认上传";
+        body.innerHTML = `
+          <div class="modal-field"><span class="field-label"><span class="required-mark">*</span>上传资料</span>
+            <input class="upload-real-input" id="pcCollectUploadInput" type="file" multiple accept=".doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.pdf">
+            <label class="upload-button" for="pcCollectUploadInput">上传文件</label>
+            <span class="upload-hint">最多支持上传 5 个文件，支持 Word、PPT、Excel、PNG、JPG、PDF 格式，单个文件不超过 15M。</span>
+            <span class="upload-error" id="publishUploadError"></span>
+            <div class="uploaded-list" id="pcCollectUploadList"></div>
+          </div>
+        `;
+      } else if (mode === "publish") {
+        publishUploadedFiles = [];
+        title.textContent = "发布资料";
+        confirm.textContent = "确认发布";
+        body.innerHTML = `
+          <label><span class="field-label"><span class="required-mark">*</span>资料名称</span><input id="publishTitleInput" value="暑期安全告知书"></label>
+          <label><span class="field-label"><span class="required-mark">*</span>发布对象</span><select id="publishTargetSelect"><option>一年级1班</option><option>一年级全年级</option><option>全校</option></select></label>
+          <label><span class="field-label"><span class="required-mark">*</span>发布时间</span>
+            <select id="publishMode">
+              <option value="now">立即发布</option>
+              <option value="schedule">定时发布</option>
+            </select>
+          </label>
+          <label id="scheduleTimeField" style="display:none;"><span class="field-label"><span class="required-mark">*</span>定时发布时间</span><input id="schedulePublishTime" type="datetime-local" step="1"></label>
+          <label>资料说明<textarea rows="3">请家长查看并下载附件。</textarea></label>
+          <div class="modal-field"><span class="field-label"><span class="required-mark">*</span>附件</span>
+            <input class="upload-real-input" id="publishFileInput" type="file" multiple accept=".doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.pdf">
+            <label class="upload-button" for="publishFileInput">上传文件</label>
+            <span class="upload-hint">最多支持上传 5 个文件，支持 Word、PPT、Excel、PNG、JPG、PDF 格式，单个文件不超过 15M。</span>
+            <span class="upload-error" id="publishUploadError"></span>
+            <div class="uploaded-list" id="publishUploadedList"></div>
+          </div>
+        `;
+      } else {
+        collectAttachmentFiles = [];
+        title.textContent = "发布收集";
+        confirm.textContent = "确认发布";
+        body.innerHTML = `
+          <label><span class="field-label"><span class="required-mark">*</span>收集名称</span><input id="collectTitleInput" value="春季学籍材料收集"></label>
+          <label><span class="field-label"><span class="required-mark">*</span>收集对象</span><input class="picker-input" id="collectTargetInput" value="${getCollectTargetText()}" readonly data-open-target-picker></label>
+          <label><span class="field-label"><span class="required-mark">*</span>开始方式</span>
+            <select id="collectStartMode">
+              <option value="now">立即开始</option>
+              <option value="schedule">定时开始</option>
+            </select>
+          </label>
+          <label id="collectStartTimeField" style="display:none;"><span class="field-label"><span class="required-mark">*</span>开始时间</span><input id="collectStartTime" type="datetime-local" step="1"></label>
+          <label><span class="field-label"><span class="required-mark">*</span>截止时间</span><input id="collectDeadlineInput" type="datetime-local" step="1" value="2026-06-20T18:00:00"></label>
+          <label><span class="field-label"><span class="required-mark">*</span>上传要求</span><textarea id="collectRequirementInput" rows="3">请上传户口本首页、学生页及监护人页照片或 PDF。</textarea></label>
+          <div class="modal-field">说明附件
+            <input class="upload-real-input" id="collectAttachmentInput" type="file" accept=".doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.pdf">
+            <label class="upload-button" for="collectAttachmentInput">上传附件</label>
+            <span class="upload-hint">仅支持上传 1 个附件，支持 Word、PPT、Excel、PNG、JPG、PDF 格式，单个文件不超过 15M。</span>
+            <span class="upload-error" id="publishUploadError"></span>
+            <div class="uploaded-list" id="collectAttachmentList"></div>
+          </div>
+        `;
+      }
+
+      mask.dataset.mode = mode;
+      mask.classList.add("show");
+    }
+
+    function closeModal() {
+      const mask = document.getElementById("modalMask");
+      if (mask.dataset.mode === "endCollectConfirm") pendingEndCollectId = "";
+      if (mask.dataset.mode === "deleteConfirm") pendingDeleteConfirm = null;
+      mask.classList.remove("show");
+      mask.querySelector(".modal")?.classList.remove("rules-modal", "participant-modal");
+    }
+
+    function requireModalValue(id, message) {
+      const field = document.getElementById(id);
+      const value = field?.value?.trim();
+      if (value) return true;
+      showToast(message);
+      field?.focus();
+      return false;
+    }
+
+    function validatePublishModal() {
+      if (!requireModalValue("publishTitleInput", "请填写资料名称")) return false;
+      if (!requireModalValue("publishTargetSelect", "请选择发布对象")) return false;
+      if (!requireModalValue("publishMode", "请选择发布时间")) return false;
+      if (document.getElementById("publishMode")?.value === "schedule" && !requireModalValue("schedulePublishTime", "请选择定时发布时间")) return false;
+      if (publishUploadedFiles.length === 0) {
+        showPublishUploadError("请至少上传 1 个附件");
+        showToast("请先上传附件");
+        document.getElementById("publishFileInput")?.focus();
+        return false;
+      }
+      return true;
+    }
+
+    function validateCollectModal() {
+      if (!requireModalValue("collectTitleInput", "请填写收集名称")) return false;
+      if (!requireModalValue("collectTargetInput", "请选择收集对象")) return false;
+      if (!requireModalValue("collectStartMode", "请选择开始方式")) return false;
+      if (document.getElementById("collectStartMode")?.value === "schedule" && !requireModalValue("collectStartTime", "请选择定时开始时间")) return false;
+      if (!requireModalValue("collectDeadlineInput", "请选择截止时间")) return false;
+      if (!requireModalValue("collectRequirementInput", "请填写上传要求")) return false;
+      return true;
+    }
+
+    function commitPcCollectUpload() {
+      if (!pcCollectUploadFiles.length) {
+        showPublishUploadError("请至少上传 1 个文件");
+        showToast("请先上传资料");
+        return false;
+      }
+
+      const submitTime = "2026-06-13 18:20";
+      if (pcReceivedUploadTaskId) {
+        const task = receivedCollects.find(item => item.id === pcReceivedUploadTaskId);
+        if (!task || task.status === "已结束") {
+          showToast("收集已结束，无法上传资料");
+          return false;
+        }
+        task.files = [...(task.files || []), ...pcCollectUploadFiles.map(file => file.name)];
+        task.status = "已上传";
+        task.submitTime = submitTime;
+        renderRows();
+        openReceivedCollectDetail(task);
+        return true;
+      }
+      const resource = resources.find(item => String(item.id) === String(pcCollectUploadResourceId));
+      const submission = collectSubmissions.find(item => (item.submitter || item.student) === "当前教师");
+      const uploadedNames = pcCollectUploadFiles.map(file => file.name);
+
+      if (submission) {
+        const hadSubmitted = submission.status === "已提交";
+        submission.status = "已提交";
+        submission.files = [...(submission.files || []), ...uploadedNames];
+        submission.submitTime = submitTime;
+        submission.submitter = "当前教师";
+        if (resource && !hadSubmitted) resource.submitted = Math.min((resource.sendCount || resource.should || resource.submitted + 1), (resource.submitted || 0) + 1);
+      } else {
+        collectSubmissions.unshift({
+          submitter: "当前教师",
+          student: "当前教师",
+          parent: "",
+          status: "已提交",
+          files: uploadedNames,
+          submitTime
+        });
+        if (resource) resource.submitted = Math.min((resource.sendCount || resource.should || resource.submitted + 1), (resource.submitted || 0) + 1);
+      }
+
+      if (resource) {
+        resource.teacherUploadFiles = [...(resource.teacherUploadFiles || []), ...uploadedNames];
+        resource.teacherSubmitTime = submitTime;
+      }
+      renderRows();
+      renderCollectSubmissions();
+      return true;
+    }
+
+    function completeAppUpload() {
+      if (appUploadTaskId.startsWith("teacher-received:")) {
+        const taskId = appUploadTaskId.replace("teacher-received:", "");
+        const task = receivedCollects.find(item => item.id === taskId);
+        if (!task || task.status === "已结束") return;
+        task.files = [...(task.files || []), ...appUploadFiles.map(file => file.name)];
+        task.status = "已上传";
+        task.submitTime = "2026-06-13 18:20";
+        renderAppTasks();
+        document.getElementById("resourceScreen").classList.remove("active");
+        openTeacherReceivedCollectDetail(task.id);
+        showToast("提交成功");
+        return;
+      }
+
+      if (appUploadTaskId.startsWith("teacher:")) {
+        const taskId = appUploadTaskId.replace("teacher:", "");
+        const task = resources.find(item => String(item.id) === taskId);
+        if (!task) return;
+        const hadSubmitted = Boolean(task.teacherUploadFiles?.length);
+        const submittedFiles = [...(task.teacherUploadFiles || []), ...appUploadFiles.map(file => file.name)];
+        const submitTime = "2026-06-13 18:20";
+
+        task.teacherUploadFiles = submittedFiles;
+        task.teacherSubmitTime = submitTime;
+        if (!hadSubmitted) {
+          task.submitted = Math.min((task.sendCount || task.should || task.submitted + 1), (task.submitted || 0) + 1);
+        }
+
+        const submission = collectSubmissions.find(item => (item.submitter || item.student) === "当前教师");
+        if (submission) {
+          submission.status = "已提交";
+          submission.files = submittedFiles;
+          submission.submitTime = submitTime;
+          submission.submitter = "当前教师";
+        } else {
+          collectSubmissions.unshift({
+            submitter: "当前教师",
+            student: "当前教师",
+            parent: "",
+            status: "已提交",
+            files: submittedFiles,
+            submitTime
+          });
+        }
+
+        renderRows();
+        renderAppTasks();
+        document.getElementById("resourceScreen").classList.remove("active");
+        openTeacherCollectDetail(task.id);
+        showToast("提交成功");
+        return;
+      }
+
+      const task = appTasks.find(item => item.id === appUploadTaskId);
+      if (!task) return;
+      const submittedFiles = [...(task.uploadFiles || []), ...appUploadFiles.map(file => file.name)];
+      const submitTime = "2026-06-13 18:20";
+
+      task.type = "已上传";
+      task.uploadFiles = submittedFiles;
+      task.submitTime = submitTime;
+
+      const resource = resources.find(item => item.id === task.resourceId);
+      if (resource && task.id === "a1") {
+        resource.submitted = Math.min((resource.sendCount || resource.should || resource.submitted + 1), (resource.submitted || 0) + 1);
+        task.submittedCount = resource.submitted;
+      }
+
+      const submission = collectSubmissions.find(item => item.student === "王小一");
+      if (submission) {
+        submission.status = "已提交";
+        submission.files = submittedFiles;
+        submission.submitTime = submitTime;
+      }
+
+      if (!submitters.some(item => item.student === "王小一" && item.time === submitTime)) {
+        submitters.unshift({
+          student: "王小一",
+          parent: "王小一家长",
+          time: submitTime,
+          files: submittedFiles,
+          archived: false
+        });
+      }
+
+      renderRows();
+      renderAppTasks();
+      document.getElementById("resourceScreen").classList.remove("active");
+      openAppDetail(task.id);
+      showToast("上传成功，老师端提交数已同步");
+    }
+
+    document.addEventListener("click", event => {
+      const target = event.target;
+      const prdRuleButton = target.closest("[data-prd-rules]");
+      if (prdRuleButton) {
+        openPrdRules(prdRuleButton.dataset.prdRules);
+        return;
+      }
+
+      const modalButton = target.closest("[data-open-modal]");
+      if (modalButton) openModal(modalButton.dataset.openModal);
+
+      if (target.closest("[data-open-target-picker]")) openTargetPicker();
+
+      if (target.id === "closeTargetPicker" || target.id === "cancelTargetPicker") closeTargetPicker();
+
+      const targetTab = target.closest("[data-target-tab]");
+      if (targetTab) {
+        targetPickerTab = targetTab.dataset.targetTab;
+        renderTargetPicker();
+      }
+
+      if (target.closest("[data-target-all]")) toggleTargetAll();
+
+      const targetItem = target.closest("[data-target-item]");
+      if (targetItem) toggleTargetItem(targetItem.dataset.targetItem);
+
+      const removeTarget = target.closest("[data-remove-target]");
+      if (removeTarget) {
+        targetPickerDraft = targetPickerDraft.filter(item => item !== removeTarget.dataset.removeTarget);
+        renderTargetPicker();
+      }
+
+      if (target.id === "confirmTargetPicker") {
+        selectedCollectTargets = [...targetPickerDraft];
+        updateCollectTargetInput();
+        const appTargetInput = document.getElementById("appCollectTargetInput");
+        if (appTargetInput) appTargetInput.value = getCollectTargetText();
+        closeTargetPicker();
+      }
+
+      if (target.id === "closeModal" || target.id === "cancelModal") closeModal();
+
+      if (target.id === "confirmModal") {
+        const mode = document.getElementById("modalMask").dataset.mode;
+        if (mode === "rules") {
+          closeModal();
+          return;
+        }
+        if (mode === "deleteConfirm") {
+          confirmDeleteAction();
+          return;
+        }
+        if (mode === "publish" && !validatePublishModal()) return;
+        if (mode === "collect" && !validateCollectModal()) return;
+        if (mode === "pcCollectUpload" && !commitPcCollectUpload()) return;
+        if (mode === "batchSaveAs") {
+          commitBatchSaveAs();
+          closeModal();
+          return;
+        }
+        if (mode === "endCollectConfirm") {
+          const endingId = pendingEndCollectId;
+          closeModal();
+          const item = resources.find(resource => String(resource.id) === String(endingId));
+          if (item) item.status = "已结束";
+          pendingEndCollectId = "";
+          renderRows();
+          renderAppTasks();
+          showToast("已结束收集");
+          return;
+        }
+        closeModal();
+        if (mode === "archive") {
+          archivedCount += 1;
+          renderRows();
+          showToast("已归档到我的资源");
+        } else if (mode === "saveAs") {
+          showToast("已保存到选择的资源目录");
+        } else if (mode === "submissionFiles" || mode === "participantList") {
+          showToast("已关闭列表");
+        } else if (mode === "pcCollectUpload") {
+          showToast("资料已上传");
+        } else {
+          showToast(mode === "publish" ? "资料已发布" : "收集任务已发布");
+        }
+      }
+
+      if (target.closest("[data-detail]")) {
+        const item = resources.find(resource => String(resource.id) === target.closest("[data-detail]").dataset.detail);
+        if (item?.type === "收集") {
+          openCollectDetail(item);
+        } else {
+          openPublishDetail(item);
+        }
+      }
+
+      const participantList = target.closest("[data-participant-list]");
+      if (participantList) {
+        openParticipantListModal(participantList.dataset.participantList);
+      }
+
+      if (target.id === "batchSaveAsBtn") {
+        pendingBatchSaveFiles = getCollectFileRows().filter(item => selectedCollectFiles.has(item.id));
+        if (!pendingBatchSaveFiles.length) {
+          showToast("请先选择文件");
+          return;
+        }
+        openModal("batchSaveAs");
+      }
+
+      const collectPage = target.closest("[data-collect-page]");
+      if (collectPage) {
+        const totalPages = Math.max(1, Math.ceil(getCollectFileRows().length / collectDetailPageSize));
+        const action = collectPage.dataset.collectPage;
+        if (action === "prev") collectDetailPage = Math.max(1, collectDetailPage - 1);
+        else if (action === "next") collectDetailPage = Math.min(totalPages, collectDetailPage + 1);
+        else collectDetailPage = Number(action);
+        renderCollectSubmissions();
+      }
+
+      const receivedDetail = target.closest("[data-received-detail]");
+      if (receivedDetail) {
+        const task = receivedCollects.find(item => item.id === receivedDetail.dataset.receivedDetail);
+        if (task) openReceivedCollectDetail(task);
+      }
+
+      if (target.id === "backPublishList" || target.id === "backCollectList") backToPcList();
+
+      const pcCollectUpload = target.closest("[data-pc-collect-upload]");
+      if (pcCollectUpload) {
+        const item = resources.find(resource => String(resource.id) === String(pcCollectUpload.dataset.pcCollectUpload));
+        if (item?.status === "已结束") {
+          showToast("收集已结束，无法上传资料");
+          return;
+        }
+        pcCollectUploadResourceId = pcCollectUpload.dataset.pcCollectUpload;
+        openModal("pcCollectUpload");
+      }
+
+      const pcReceivedUpload = target.closest("[data-pc-received-upload]");
+      if (pcReceivedUpload) {
+        const task = receivedCollects.find(item => item.id === pcReceivedUpload.dataset.pcReceivedUpload);
+        if (!task || task.status === "已结束") {
+          showToast("收集已结束，无法上传资料");
+          return;
+        }
+        pcReceivedUploadTaskId = task.id;
+        pcCollectUploadResourceId = "";
+        openModal("pcCollectUpload");
+      }
+
+      if (target.closest("[data-save-as]")) {
+        openModal("saveAs");
+      }
+
+      const viewSubmission = target.closest("[data-view-submission]");
+      if (viewSubmission) {
+        const mask = document.getElementById("modalMask");
+        mask.dataset.student = viewSubmission.dataset.viewSubmission;
+        openModal("submissionFiles");
+      }
+
+      if (target.closest("[data-revoke-publish]")) {
+        const item = resources.find(resource => String(resource.id) === target.closest("[data-revoke-publish]").dataset.revokePublish);
+        if (item) item.status = "已撤回";
+        renderRows();
+        showToast("已撤回未发布内容");
+      }
+
+      const deletePublish = target.closest("[data-delete-publish]");
+      if (deletePublish) {
+        const item = resources.find(resource => String(resource.id) === deletePublish.dataset.deletePublish);
+        openDeleteConfirm({
+          message: `确定要删除「${item?.name || "当前内容"}」吗？删除后将不再在列表中展示。`,
+          successText: "已删除内容",
+          onConfirm: () => {
+            const index = resources.findIndex(resource => String(resource.id) === deletePublish.dataset.deletePublish);
+            if (index >= 0) resources.splice(index, 1);
+            renderRows();
+          }
+        });
+      }
+
+      const endCollect = target.closest("[data-end-collect]");
+      if (endCollect) {
+        pendingEndCollectId = endCollect.dataset.endCollect;
+        openModal("endCollectConfirm");
+      }
+
+      const deleteCollect = target.closest("[data-delete-collect]");
+      if (deleteCollect) {
+        const item = resources.find(resource => String(resource.id) === deleteCollect.dataset.deleteCollect);
+        openDeleteConfirm({
+          message: `确定要删除「${item?.name || "当前收集"}」吗？删除后该收集任务将不再在列表中展示。`,
+          successText: "已删除收集",
+          onConfirm: () => {
+            const index = resources.findIndex(resource => String(resource.id) === deleteCollect.dataset.deleteCollect);
+            if (index >= 0) resources.splice(index, 1);
+            renderRows();
+          }
+        });
+      }
+
+      if (target.closest("[data-download]") || target.closest("[data-file-download]") || target.closest("[data-mobile-download]")) {
+        showToast("已开始下载");
+      }
+
+      if (target.closest("[data-view-file]")) {
+        showToast("已打开文件预览");
+      }
+
+      const deletePublishFile = target.closest("[data-delete-publish-file]");
+      if (deletePublishFile) {
+        publishUploadedFiles.splice(Number(deletePublishFile.dataset.deletePublishFile), 1);
+        renderPublishUploadedFiles();
+        showPublishUploadError("");
+        showToast("已删除文件");
+      }
+
+      const deleteCollectAttachment = target.closest("[data-delete-collect-attachment]");
+      if (deleteCollectAttachment) {
+        collectAttachmentFiles.splice(Number(deleteCollectAttachment.dataset.deleteCollectAttachment), 1);
+        renderCollectAttachmentFiles();
+        showPublishUploadError("");
+        showToast("已删除说明附件");
+      }
+
+      const deletePcCollectUpload = target.closest("[data-delete-pc-collect-upload]");
+      if (deletePcCollectUpload) {
+        pcCollectUploadFiles.splice(Number(deletePcCollectUpload.dataset.deletePcCollectUpload), 1);
+        renderPcCollectUploadFiles();
+        showPublishUploadError("");
+        showToast("已删除文件");
+      }
+
+      const deleteAppUpload = target.closest("[data-delete-app-upload]");
+      if (deleteAppUpload) {
+        appUploadFiles.splice(Number(deleteAppUpload.dataset.deleteAppUpload), 1);
+        renderAppUploadFiles();
+        showAppUploadError("");
+        showToast("已删除文件");
+      }
+
+      const deleteAppCollectAttachment = target.closest("[data-delete-app-collect-attachment]");
+      if (deleteAppCollectAttachment) {
+        appCollectAttachmentFiles.splice(Number(deleteAppCollectAttachment.dataset.deleteAppCollectAttachment), 1);
+        renderAppCollectAttachment();
+        showAppCollectFormError("");
+        showToast("已删除说明附件");
+      }
+
+      if (target.closest("[data-archive-row]") || target.closest("[data-single-archive]")) {
+        openModal("archive");
+      }
+
+      if (target.id === "searchBtn") renderRows();
+
+      const pcCollectView = target.closest("[data-pc-collect-view]");
+      if (pcCollectView) {
+        pcCollectViewMode = pcCollectView.dataset.pcCollectView;
+        document.getElementById("statusFilter").value = "";
+        updatePcPageAction();
+        renderRows();
+      }
+
+      if (target.id === "resetBtn") {
+        document.getElementById("nameFilter").value = "";
+        document.getElementById("statusFilter").value = "";
+        document.getElementById("startDateFilter").value = "";
+        document.getElementById("endDateFilter").value = "";
+        renderRows();
+      }
+
+      if (target.closest("#openResourceApp")) {
+        document.getElementById("workbenchScreen").classList.remove("active");
+        document.getElementById("resourceScreen").classList.add("active");
+        renderAppStatusFilters();
+        renderAppTasks();
+      }
+
+      if (target.id === "backWorkbench") {
+        document.getElementById("resourceScreen").classList.remove("active");
+        document.getElementById("workbenchScreen").classList.add("active");
+      }
+
+      if (target.id === "backResourceList") {
+        document.getElementById("resourceDetailScreen").classList.remove("active");
+        document.getElementById("resourceScreen").classList.add("active");
+        document.getElementById("appDetailAction").style.display = "none";
+        finishPendingAppRead();
+      }
+
+      if (target.id === "backAppParticipant") {
+        document.getElementById("appParticipantScreen").classList.remove("active");
+        document.getElementById("resourceDetailScreen").classList.add("active");
+      }
+
+      if (target.id === "backAppCollectList") {
+        backToAppCollectList();
+      }
+
+      const appRole = target.closest("[data-app-role]");
+      if (appRole) {
+        switchAppRole(appRole.dataset.appRole);
+      }
+
+      const teacherResourceTab = target.closest("[data-teacher-resource-tab]");
+      if (teacherResourceTab) {
+        activeTeacherResourceTab = teacherResourceTab.dataset.teacherResourceTab;
+        activeMyResourceFolder = "全部";
+        activeSchoolResourceFolder = "根目录";
+        showMobileFolderTree = false;
+        activeAppFilter = "全部";
+        renderAppStatusFilters();
+        renderAppTasks();
+      }
+
+      const teacherCollectView = target.closest("[data-teacher-collect-view]");
+      if (teacherCollectView) {
+        activeTeacherCollectView = teacherCollectView.dataset.teacherCollectView;
+        activeAppFilter = "全部";
+        renderAppStatusFilters();
+        renderAppTasks();
+      }
+
+      if (target.id === "toggleMobileFolderTree") {
+        openMobileFolderSheet();
+      }
+
+      const mobileFolder = target.closest("[data-mobile-folder]");
+      if (mobileFolder) {
+        if (activeTeacherResourceTab === "我的资源") {
+          activeMyResourceFolder = mobileFolder.dataset.mobileFolder;
+        } else {
+          activeSchoolResourceFolder = mobileFolder.dataset.mobileFolder;
+        }
+        showMobileFolderTree = false;
+        closeAppResourceSheet();
+        renderAppTasks();
+      }
+
+      if (target.id === "closeAppSheet" || target.id === "cancelAppSheet") {
+        closeAppResourceSheet();
+      }
+
+      if (target.id === "confirmAppSheet") {
+        confirmAppResourceSheet();
+      }
+
+      if (target.id === "confirmDeleteAction") {
+        confirmDeleteAction();
+      }
+
+      if (target.id === "confirmMobileSaveAs") {
+        closeAppResourceSheet();
+        showToast("已保存到选择的资源目录");
+      }
+
+      if (target.id === "confirmMobileBatchSaveAs") {
+        commitMobileBatchSaveAs();
+      }
+
+      const editMobileResource = target.closest("[data-mobile-resource-edit]");
+      if (editMobileResource) {
+        openMobileResourceEdit(Number(editMobileResource.dataset.mobileResourceEdit));
+      }
+
+      const viewMobileResource = target.closest("[data-mobile-resource-view]");
+      if (viewMobileResource) {
+        openMobileResourceView(Number(viewMobileResource.dataset.mobileResourceView));
+      }
+
+      const downloadMobileResourceAction = target.closest("[data-mobile-resource-download]");
+      if (downloadMobileResourceAction) {
+        downloadMobileResource(Number(downloadMobileResourceAction.dataset.mobileResourceDownload));
+      }
+
+      const mobileSaveAs = target.closest("[data-mobile-save-as]");
+      if (mobileSaveAs) {
+        openMobileSaveAsSheet(mobileSaveAs.dataset.mobileSaveAs);
+      }
+
+      const deleteMobileResource = target.closest("[data-mobile-resource-delete]");
+      if (deleteMobileResource) {
+        openMobileResourceDelete(Number(deleteMobileResource.dataset.mobileResourceDelete));
+      }
+
+      if (target.id === "openAppCollectCreate") {
+        if (activeAppRole === "teacher" && activeTeacherResourceTab !== "资料收集") {
+          uploadTeacherResource();
+        } else {
+          openAppCollectCreate();
+        }
+      }
+
+      if (target.id === "chooseAppCollectAttachment") {
+        document.getElementById("appCollectAttachmentInput").click();
+      }
+
+      if (target.id === "confirmAppCollectCreate") {
+        confirmAppCollectCreate();
+      }
+
+      const appFilter = target.closest("[data-app-filter]");
+      if (appFilter) {
+        activeAppFilter = appFilter.dataset.appFilter;
+        document.querySelectorAll("[data-app-filter]").forEach(btn => btn.classList.remove("active"));
+        appFilter.classList.add("active");
+        renderAppTasks();
+      }
+
+      const upload = target.closest("[data-upload]");
+      if (upload) {
+        chooseAppUploadFiles(upload.dataset.upload);
+      }
+
+      const teacherCollectUpload = target.closest("[data-teacher-collect-upload]");
+      if (teacherCollectUpload) {
+        chooseTeacherCollectUpload(teacherCollectUpload.dataset.teacherCollectUpload);
+      }
+
+      const teacherCollectDetail = target.closest("[data-view-teacher-collect]");
+      if (teacherCollectDetail) {
+        openTeacherCollectDetail(teacherCollectDetail.dataset.viewTeacherCollect);
+      }
+
+      const appParticipantButton = target.closest("[data-app-participant-list]");
+      if (appParticipantButton) {
+        const task = resources.find(item => String(item.id) === activeMobileCollectTaskId);
+        if (task) openAppParticipantList(appParticipantButton.dataset.appParticipantList, task);
+      }
+
+      if (target.id === "mobileBatchSaveAsBtn") {
+        openMobileBatchSaveAsSheet();
+      }
+
+      const teacherReceivedDetail = target.closest("[data-view-teacher-received]");
+      if (teacherReceivedDetail) {
+        openTeacherReceivedCollectDetail(teacherReceivedDetail.dataset.viewTeacherReceived);
+      }
+
+      const teacherReceivedUpload = target.closest("[data-teacher-received-upload]");
+      if (teacherReceivedUpload) {
+        chooseTeacherReceivedUpload(teacherReceivedUpload.dataset.teacherReceivedUpload);
+      }
+
+      const mobileSubmission = target.closest("[data-mobile-view-submission]");
+      if (mobileSubmission) {
+        openMobileSubmissionSheet(mobileSubmission.dataset.mobileViewSubmission);
+      }
+
+      const mobileDetail = target.closest("[data-view-mobile]");
+      if (mobileDetail) openAppDetail(mobileDetail.dataset.viewMobile);
+    });
+
+    document.addEventListener("change", event => {
+      const target = event.target;
+      if (target.id === "publishFileInput") {
+        addPublishFiles(target.files);
+        target.value = "";
+      }
+      if (target.id === "publishMode") {
+        document.getElementById("scheduleTimeField").style.display = target.value === "schedule" ? "grid" : "none";
+      }
+      if (target.id === "collectStartMode") {
+        document.getElementById("collectStartTimeField").style.display = target.value === "schedule" ? "grid" : "none";
+      }
+      if (target.id === "collectAttachmentInput") {
+        addCollectAttachment(target.files);
+        target.value = "";
+      }
+      if (target.id === "pcCollectUploadInput") {
+        addPcCollectUploadFiles(target.files);
+        target.value = "";
+      }
+      if (target.id === "appUploadInput") {
+        addAppUploadFiles(target.files);
+        if (appUploadFiles.length) completeAppUpload();
+        target.value = "";
+      }
+      if (target.id === "appCollectStartMode") {
+        document.getElementById("appCollectStartTimeField").style.display = target.value === "schedule" ? "grid" : "none";
+      }
+      if (target.id === "appCollectAttachmentInput") {
+        addAppCollectAttachment(target.files);
+        target.value = "";
+      }
+      if (target.id === "saveAsScope") {
+        updateSaveAsFolderOptions(target.value);
+      }
+      if (target.id === "mobileSaveAsScope") {
+        updateMobileSaveAsFolderOptions(target.value);
+      }
+      if (target.id === "teacherCollectStatusSelect") {
+        activeAppFilter = target.value;
+        renderAppTasks();
+      }
+      if (target.id === "selectAllMobileCollectFiles") {
+        const fileRows = getMobileCollectFileRows();
+        if (target.checked) fileRows.forEach(item => selectedMobileCollectFiles.add(item.id));
+        else selectedMobileCollectFiles.clear();
+        renderMobileCollectFileList();
+      }
+      if (target.dataset.mobileCollectFile) {
+        if (target.checked) selectedMobileCollectFiles.add(target.dataset.mobileCollectFile);
+        else selectedMobileCollectFiles.delete(target.dataset.mobileCollectFile);
+        renderMobileCollectFileList();
+      }
+      if (target.id === "readStatusFilter") renderPublishReaders();
+      if (target.id === "collectSubmitStatusFilter") {
+        renderCollectSubmissions();
+      }
+      if (target.id === "selectAllCollectFiles") {
+        const fileRows = getCollectFileRows();
+        if (target.checked) fileRows.forEach(item => selectedCollectFiles.add(item.id));
+        else fileRows.forEach(item => selectedCollectFiles.delete(item.id));
+        renderCollectSubmissions();
+      }
+      if (target.dataset.selectCollectFile) {
+        if (target.checked) selectedCollectFiles.add(target.dataset.selectCollectFile);
+        else selectedCollectFiles.delete(target.dataset.selectCollectFile);
+        renderCollectSubmissions();
+      }
+    });
+
+    document.addEventListener("input", event => {
+      const target = event.target;
+      if (target.id === "collectStudentFilter") {
+        collectDetailPage = 1;
+        renderCollectSubmissions();
+      }
+    });
+
+    updatePcPageAction();
+    renderRows();
+    renderAppStatusFilters();
+    renderAppTasks();
+  </script>
+</body>
+</html>
